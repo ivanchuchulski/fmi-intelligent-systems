@@ -90,7 +90,7 @@ public class Main {
         return goalState;
     }
 
-    private static void printBoard(int[][] board) {
+    public static void printBoard(int[][] board) {
         System.out.println("printing board : ");
 
         for (int i = 0; i < board.length; i++) {

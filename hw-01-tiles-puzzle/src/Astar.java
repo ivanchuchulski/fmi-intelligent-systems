@@ -29,7 +29,7 @@ public class Astar {
 
             level = currentState.getPath();
 
-            if (isGoal()) {
+            if (isGoalReached()) {
                 break;
             }
 
@@ -85,107 +85,73 @@ public class Astar {
     }
 
     private Node[] getChildNodes() {
-        EmptyPositionLocation zeroPos = getZeroPosition();
-
-        int row = zeroPos.getRow();
-        int col = zeroPos.getColumn();
-        int[][] current = currentState.getState();
+        EmptyPositionLocation empty = getZeroPosition();
 
         ++level;
 
-        Node up = moveUp(makeCopyState(current), row, col);
-        Node down = moveDown(makeCopyState(current), row, col);
-        Node left = moveLeft(makeCopyState(current), row, col);
-        Node right = moveRight(makeCopyState(current), row, col);
+        Node up = moveTileUp(empty);
+        Node down = moveTileDown(empty);
+        Node left = moveTileLeft(empty);
+        Node right = moveTileRight(empty);
 
-        Node[] childStates = {up, down, left, right};
-
-        Node[] children = {myMoveUp(zeroPos), down, left, right};
-
-        return childStates;
+        return new Node[]{up, down, left, right};
     }
 
-    /**
-     * Move zero position down
-     *
-     * @param current - current state
-     * @param row     - row of the zero position
-     * @param col     - col of the zero position
-     */
-    private Node moveUp(int[][] current, int row, int col) {
-        if (row < boardSize - 1) {
-            current[row][col] = current[row + 1][col];
-            current[row + 1][col] = 0;
-        }
-
-        Node up = new Node(current, currentState, calculateFullCost(current), "up", level);
-
-        return up;
-    }
-
-    private Node myMoveUp(EmptyPositionLocation empty) {
+    // move zero position down
+    private Node moveTileUp(EmptyPositionLocation empty) {
         int[][] childBoard = makeCopyState(currentState.getState());
+        int row = empty.getRow();
+        int col = empty.getColumn();
 
         if (empty.getRow() < boardSize - 1) {
-            childBoard[empty.getRow()][empty.getRow()] = childBoard[empty.getRow() + 1][empty.getColumn()];
-            childBoard[empty.getRow() + 1][empty.getColumn()] = Main.EMPTY_SLOT;
+            childBoard[row][col] = childBoard[row + 1][col];
+            childBoard[row + 1][col] = Main.EMPTY_SLOT;
         }
 
-        return new Node(childBoard, currentState, calculateFullCost(childBoard), Directions.up, level);
+        return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.up, level);
     }
 
-    /**
-     * Move zero position up
-     *
-     * @param current - current state
-     * @param row     - row of the zero position
-     * @param col     - col of the zero position
-     */
-    private Node moveDown(int[][] current, int row, int col) {
-        if (row > 0) {
-            current[row][col] = current[row - 1][col];
-            current[row - 1][col] = 0;
+
+    // move zero position up
+    private Node moveTileDown(EmptyPositionLocation empty) {
+        int[][] childBoard = makeCopyState(currentState.getState());
+        int row = empty.getRow();
+        int col = empty.getColumn();
+
+        if (empty.getRow() > 0) {
+            childBoard[row][col] = childBoard[row - 1][col];
+            childBoard[row - 1][col] = Main.EMPTY_SLOT;
         }
 
-        Node down = new Node(current, currentState, calculateFullCost(current), "down", level);
-
-        return down;
+        return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.down, level);
     }
 
-    /**
-     * Move zero position to the right
-     *
-     * @param current - current state
-     * @param row     - row of the zero position
-     * @param col     - col of the zero position
-     */
-    private Node moveLeft(int[][] current, int row, int col) {
+    // move zero position right
+    private Node moveTileLeft(EmptyPositionLocation empty) {
+        int[][] childBoard = makeCopyState(currentState.getState());
+        int row = empty.getRow();
+        int col = empty.getColumn();
+
         if (col < boardSize - 1) {
-            current[row][col] = current[row][col + 1];
-            current[row][col + 1] = 0;
+            childBoard[row][col] = childBoard[row][col + 1];
+            childBoard[row][col + 1] = 0;
         }
 
-        Node left = new Node(current, currentState, calculateFullCost(current), "left", level);
-
-        return left;
+        return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.left, level);
     }
 
-    /**
-     * Move zero position to the left
-     *
-     * @param current - current position
-     * @param row     - row of the current position
-     * @param col     - col of the current position
-     */
-    private Node moveRight(int[][] current, int row, int col) {
+    // move zero position left
+    private Node moveTileRight(EmptyPositionLocation empty) {
+        int[][] childBoard = makeCopyState(currentState.getState());
+        int row = empty.getRow();
+        int col = empty.getColumn();
+
         if (col > 0) {
-            current[row][col] = current[row][col - 1];
-            current[row][col - 1] = 0;
+            childBoard[row][col] = childBoard[row][col - 1];
+            childBoard[row][col - 1] = 0;
         }
 
-        Node right = new Node(current, currentState, calculateFullCost(current), "right", level);
-
-        return right;
+        return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.right, level);
     }
 
     /**
@@ -261,13 +227,11 @@ public class Astar {
         return sum;
     }
 
-    private int calculateFullCost(int[][] state) {
-        int cost = level + manhattanSum(state);
-
-        return cost;
+    private int calculateStateFullCost(int[][] state) {
+        return level + manhattanSum(state);
     }
 
-    private boolean isGoal() {
+    private boolean isGoalReached() {
         int[][] current = currentState.getState();
         int[][] goal = finalState.getState();
 
@@ -281,6 +245,4 @@ public class Astar {
 
         return true;
     }
-
-
 }
