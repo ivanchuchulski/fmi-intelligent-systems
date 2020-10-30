@@ -1,11 +1,15 @@
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+    public static final int EMPTY_SLOT = 0;
+
     public static void main(String[] args) {
         System.out.println("hello");
 
         int[][] initialState = inputBoard();
+        int[][] goalState = generateGoalState(initialState);
 
         printBoard(initialState);
 
@@ -18,6 +22,10 @@ public class Main {
         }
 
 
+        Astar aStarSearch = new Astar(initialState, goalState);
+
+        aStarSearch.findSolution();
+        aStarSearch.printResult();
     }
 
     private static boolean checkIsBoardSolvable(int[][] initialState) {
@@ -26,7 +34,7 @@ public class Main {
 
         for (int i = 0; i < initialState.length; i++) {
             for (int j = 0; j < initialState.length; j++) {
-                if (initialState[i][j] == 0) {
+                if (initialState[i][j] == EMPTY_SLOT) {
                     continue;
                 }
 
@@ -40,13 +48,7 @@ public class Main {
         // the board is solvable if the number of inversions is even
         boolean evenInversions = numberOfInversions % 2 == 0;
 
-        if (evenInversions) {
-            return true;
-        }
-        else {
-            return false;
-        }
-
+        return evenInversions;
     }
 
     private static int[][] inputBoard() {
@@ -70,12 +72,30 @@ public class Main {
         return board;
     }
 
-    private static void printBoard(int[][] initialState) {
+    public static int[][] generateGoalState(int[][] initialBoard) {
+        int[][] goalState = new int[initialBoard.length][initialBoard.length];
+        int tilesNumber = 1;
+
+        for (int i = 0; i < initialBoard.length; i++) {
+            for (int j = 0; j < initialBoard.length; j++) {
+                if (i == initialBoard.length - 1 && j == initialBoard.length - 1) {
+                    goalState[i][j] = EMPTY_SLOT;
+                    break;
+                }
+
+                goalState[i][j] = tilesNumber++;
+            }
+        }
+
+        return goalState;
+    }
+
+    private static void printBoard(int[][] board) {
         System.out.println("printing board : ");
 
-        for (int i = 0; i < initialState.length; i++) {
-            for (int j = 0; j < initialState.length; j++) {
-                System.out.print(initialState[i][j] + " ");
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                System.out.print(board[i][j] + " ");
             }
 
             System.out.println();
