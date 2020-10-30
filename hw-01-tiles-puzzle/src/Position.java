@@ -1,11 +1,11 @@
-public class EmptyPositionLocation {
+public class Position {
     private int row;
     private int column;
 
-    public EmptyPositionLocation() {
+    public Position() {
     }
 
-    public EmptyPositionLocation(int row, int column) {
+    public Position(int row, int column) {
         this.row = row;
         this.column = column;
     }

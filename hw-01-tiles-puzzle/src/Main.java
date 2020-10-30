@@ -1,9 +1,8 @@
-import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    public static final int EMPTY_SLOT = 0;
+    public static final int EMPTY_TILE = 0;
 
     public static void main(String[] args) {
         System.out.println("hello");
@@ -34,7 +33,7 @@ public class Main {
 
         for (int i = 0; i < initialState.length; i++) {
             for (int j = 0; j < initialState.length; j++) {
-                if (initialState[i][j] == EMPTY_SLOT) {
+                if (initialState[i][j] == EMPTY_TILE) {
                     continue;
                 }
 
@@ -79,7 +78,7 @@ public class Main {
         for (int i = 0; i < initialBoard.length; i++) {
             for (int j = 0; j < initialBoard.length; j++) {
                 if (i == initialBoard.length - 1 && j == initialBoard.length - 1) {
-                    goalState[i][j] = EMPTY_SLOT;
+                    goalState[i][j] = EMPTY_TILE;
                     break;
                 }
 

@@ -12,13 +12,13 @@ class AstarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 2;
-        final String[] moves = new String[]{Directions.left, Directions.left};
+        final String moves = new String("LL");
 
         Astar astar = new Astar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertArrayEquals(moves, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     @Test
@@ -30,13 +30,13 @@ class AstarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 4;
-        final String[] moves = new String[]{Directions.left, Directions.up, Directions.left, Directions.up};
+        final String moves = new String("LULU");
 
         Astar astar = new Astar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertArrayEquals(moves, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     @Test
@@ -49,21 +49,43 @@ class AstarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 7;
-        final String[] moves = new String[]{Directions.left,
-                Directions.up,
-                Directions.right,
-                Directions.down,
-                Directions.left,
-                Directions.up,
-                Directions.left
-        };
+//        final String[] moves = new String[]{
+//                Directions.left,
+//                Directions.up,
+//                Directions.right,
+//                Directions.down,
+//                Directions.left,
+//                Directions.up,
+//                Directions.left
+//        };
+
+
+        final String moves2 = new String("ULDRULL");
 
         Astar astar = new Astar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertArrayEquals(moves, astar.getMoves());
+        assertEquals(moves2, astar.getMoves());
     }
+
+//    @Test
+//    public void test4() {
+//        int[][] initialState = {
+//                {8, 7, 4},
+//                {3, 2, 0},
+//                {6, 5, 1}};
+//        int[][] goalState = Main.generateGoalState(initialState);
+//
+//        final int steps = 25;
+//        final String moves = new String("DLULURDRULDDLUURDRDLLURRD");
+//
+//        Astar astar = new Astar(initialState, goalState);
+//        astar.findSolution();
+//
+//        assertEquals(steps, astar.getSteps());
+//        assertEquals(moves, astar.getMoves());
+//    }
 
 
 }

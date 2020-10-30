@@ -11,11 +11,24 @@ public class Astar {
     private final int boardSize;
     private int level;
 
+    private Map<Integer, Position> currentStatePositions;
+    private Map<Integer, Position> goalStatePositions;
+
     public Astar(int[][] initialState, int[][] goalState) {
         this.currentState = new Node(initialState, null, manhattanSum(initialState), "", level);
         this.finalState = new Node(goalState, null, -1, "", -1);
         this.boardSize = initialState.length;
         this.level = 0;
+        goalStatePositions = new HashMap<>();
+
+        for (int row = 0; row < goalState.length; row++) {
+            for (int col = 0; col < goalState.length; col++) {
+                if (goalState[row][col] == Main.EMPTY_TILE) {
+                    continue;
+                }
+                goalStatePositions.put(goalState[row][col], new Position(row, col));
+            }
+        }
     }
 
     public void findSolution() {
@@ -62,22 +75,18 @@ public class Astar {
         }
     }
 
-    public String[] getMoves() {
+    public String getMoves() {
         Stack<String> result = new Stack<>();
+        StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < level; i++) {
-            result.add(currentState.getDirection());
+//            result.add(currentState.getDirection());
+
+            stringBuilder.append(currentState.getDirection());
             currentState = currentState.getParent();
         }
 
-        String[] moves = new String[result.size()];
-        int i = 0;
-
-        while (!result.isEmpty()) {
-            moves[i++] = result.pop();
-        }
-
-        return moves;
+        return stringBuilder.reverse().toString();
     }
 
     public int getSteps() {
@@ -85,7 +94,7 @@ public class Astar {
     }
 
     private Node[] getChildNodes() {
-        EmptyPositionLocation empty = getZeroPosition();
+        Position empty = getZeroPosition();
 
         ++level;
 
@@ -98,14 +107,14 @@ public class Astar {
     }
 
     // move zero position down
-    private Node moveTileUp(EmptyPositionLocation empty) {
+    private Node moveTileUp(Position empty) {
         int[][] childBoard = makeCopyState(currentState.getState());
         int row = empty.getRow();
         int col = empty.getColumn();
 
         if (empty.getRow() < boardSize - 1) {
             childBoard[row][col] = childBoard[row + 1][col];
-            childBoard[row + 1][col] = Main.EMPTY_SLOT;
+            childBoard[row + 1][col] = Main.EMPTY_TILE;
         }
 
         return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.up, level);
@@ -113,21 +122,21 @@ public class Astar {
 
 
     // move zero position up
-    private Node moveTileDown(EmptyPositionLocation empty) {
+    private Node moveTileDown(Position empty) {
         int[][] childBoard = makeCopyState(currentState.getState());
         int row = empty.getRow();
         int col = empty.getColumn();
 
         if (empty.getRow() > 0) {
             childBoard[row][col] = childBoard[row - 1][col];
-            childBoard[row - 1][col] = Main.EMPTY_SLOT;
+            childBoard[row - 1][col] = Main.EMPTY_TILE;
         }
 
         return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.down, level);
     }
 
     // move zero position right
-    private Node moveTileLeft(EmptyPositionLocation empty) {
+    private Node moveTileLeft(Position empty) {
         int[][] childBoard = makeCopyState(currentState.getState());
         int row = empty.getRow();
         int col = empty.getColumn();
@@ -141,7 +150,7 @@ public class Astar {
     }
 
     // move zero position left
-    private Node moveTileRight(EmptyPositionLocation empty) {
+    private Node moveTileRight(Position empty) {
         int[][] childBoard = makeCopyState(currentState.getState());
         int row = empty.getRow();
         int col = empty.getColumn();
@@ -154,11 +163,6 @@ public class Astar {
         return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.right, level);
     }
 
-    /**
-     * Make copy of the current state
-     *
-     * @param current - the current state
-     */
     private int[][] makeCopyState(int[][] current) {
         int[][] copyState = new int[boardSize][boardSize];
 
@@ -171,60 +175,46 @@ public class Astar {
         return copyState;
     }
 
-    /**
-     * Find the coordinates of the empty position
-     *
-     * @return the coordinates of the empty position
-     */
-    private EmptyPositionLocation getZeroPosition() {
-        EmptyPositionLocation emptyPositionLocation = new EmptyPositionLocation();
+    private Position getZeroPosition() {
+        Position position = new Position();
 
         int[][] current = currentState.getState();
 
         for (int row = 0; row < boardSize; ++row) {
-            for (int column = 0; column < boardSize; ++column) {
-                if (current[row][column] == 0) {
-                    emptyPositionLocation.setRow(row);
-                    emptyPositionLocation.setColumn(column);
+            for (int col = 0; col < boardSize; ++col) {
+                if (current[row][col] == 0) {
+                    position.setRow(row);
+                    position.setColumn(col);
                     break;
                 }
             }
         }
 
-        return emptyPositionLocation;
+        return position;
     }
 
-    /**
-     * Heuristic function evaluating the path to the current state
-     * Implementation of Manhattan Distance
-     * For every node of the current state calculate |Xg - Xc| + |Yg - Yc|
-     * and sum the results, where
-     * Xg is the row of the current node's i value in the final node
-     * Xc is the row of the current node's i value
-     * Yg is the column of the current node's i value in the final node
-     * Yc is the column of the current node's i value
-     *
-     * @return the heuristic value
-     */
     private int manhattanSum(int[][] state) {
-        int sum = 0;
+        int manhattanSum = 0;
 
         for (int row = 0; row < boardSize; ++row) {
-            for (int column = 0; column < boardSize; ++column) {
-                int value = state[row][column];
+            for (int col = 0; col < boardSize; ++col) {
+                int tile = state[row][col];
 
-                if (value == 0) {
-                    sum += Math.abs(boardSize - 1 - row); // row difference
-                    sum += Math.abs(boardSize - 1 - column); // column difference
+                if (tile == Main.EMPTY_TILE) {
+                    continue;
                 }
-                else {
-                    sum += Math.abs(((value - 1) / boardSize) - row); // row difference
-                    sum += Math.abs(((value - 1) % boardSize) - column); // column difference
-                }
+
+//                int rowGoal = Math.abs(((tile - 1) / boardSize));
+//                int colGoal = Math.abs(((tile - 1) % boardSize));
+
+                Position goalPosition = goalStatePositions.get(tile);
+
+                manhattanSum += goalPosition.getRow() - row;
+                manhattanSum += goalPosition.getColumn() - col;
             }
         }
 
-        return sum;
+        return manhattanSum;
     }
 
     private int calculateStateFullCost(int[][] state) {
