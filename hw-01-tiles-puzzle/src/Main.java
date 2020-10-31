@@ -21,7 +21,7 @@ public class Main {
         }
 
 
-        Astar aStarSearch = new Astar(initialState, goalState);
+        AStar aStarSearch = new AStar(initialState, goalState);
 
         aStarSearch.findSolution();
         aStarSearch.printResult();

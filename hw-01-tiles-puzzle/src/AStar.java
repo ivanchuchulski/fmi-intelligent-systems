@@ -1,22 +1,15 @@
 import java.util.*;
 
-/**
- * Implementation of A* algorithm for finding a solution
- *
- * @author ngadzheva
- */
-public class Astar {
-    private Node currentState;
-    private final Node finalState;
+public class AStar {
+    private Node currentNode;
+    private final Node finalNode;
     private final int boardSize;
     private int level;
-
-    private Map<Integer, Position> currentStatePositions;
     private Map<Integer, Position> goalStatePositions;
 
-    public Astar(int[][] initialState, int[][] goalState) {
-        this.currentState = new Node(initialState, null, manhattanSum(initialState), "", level);
-        this.finalState = new Node(goalState, null, -1, "", -1);
+    public AStar(int[][] initialState, int[][] goalState) {
+        this.currentNode = new Node(initialState, null, manhattanSum(initialState), "", level);
+        this.finalNode = new Node(goalState, null, -1, "", -1);
         this.boardSize = initialState.length;
         this.level = 0;
         goalStatePositions = new HashMap<>();
@@ -35,18 +28,18 @@ public class Astar {
         Set<Node> visited = new HashSet<Node>();
         PriorityQueue<Node> fringe = new PriorityQueue<>(new Node.NodeComparator());
 
-        fringe.add(currentState);
+        fringe.add(currentNode);
 
         while (!fringe.isEmpty()) {
-            currentState = fringe.remove();
+            currentNode = fringe.remove();
 
-            level = currentState.getPath();
+            level = currentNode.getPath();
 
             if (isGoalReached()) {
                 break;
             }
 
-            visited.add(currentState);
+            visited.add(currentNode);
 
             for (Node state : getChildNodes()) {
                 if (visited.contains(state)) {
@@ -61,13 +54,13 @@ public class Astar {
     }
 
     public void printResult() {
-        System.out.println(currentState.getPath());
+        System.out.println(currentNode.getPath());
 
         Stack<String> result = new Stack<>();
 
         for (int i = 0; i < level; i++) {
-            result.add(currentState.getDirection());
-            currentState = currentState.getParent();
+            result.add(currentNode.getDirection());
+            currentNode = currentNode.getParent();
         }
 
         while (!result.isEmpty()) {
@@ -82,15 +75,15 @@ public class Astar {
         for (int i = 0; i < level; i++) {
 //            result.add(currentState.getDirection());
 
-            stringBuilder.append(currentState.getDirection());
-            currentState = currentState.getParent();
+            stringBuilder.append(currentNode.getDirection());
+            currentNode = currentNode.getParent();
         }
 
         return stringBuilder.reverse().toString();
     }
 
     public int getSteps() {
-        return currentState.getPath();
+        return currentNode.getPath();
     }
 
     private Node[] getChildNodes() {
@@ -108,7 +101,7 @@ public class Astar {
 
     // move zero position down
     private Node moveTileUp(Position empty) {
-        int[][] childBoard = makeCopyState(currentState.getState());
+        int[][] childBoard = makeCopyState(currentNode.getState());
         int row = empty.getRow();
         int col = empty.getColumn();
 
@@ -117,13 +110,13 @@ public class Astar {
             childBoard[row + 1][col] = Main.EMPTY_TILE;
         }
 
-        return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.up, level);
+        return new Node(childBoard, currentNode, calculateStateFullCost(childBoard), Directions.up, level);
     }
 
 
     // move zero position up
     private Node moveTileDown(Position empty) {
-        int[][] childBoard = makeCopyState(currentState.getState());
+        int[][] childBoard = makeCopyState(currentNode.getState());
         int row = empty.getRow();
         int col = empty.getColumn();
 
@@ -132,12 +125,12 @@ public class Astar {
             childBoard[row - 1][col] = Main.EMPTY_TILE;
         }
 
-        return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.down, level);
+        return new Node(childBoard, currentNode, calculateStateFullCost(childBoard), Directions.down, level);
     }
 
     // move zero position right
     private Node moveTileLeft(Position empty) {
-        int[][] childBoard = makeCopyState(currentState.getState());
+        int[][] childBoard = makeCopyState(currentNode.getState());
         int row = empty.getRow();
         int col = empty.getColumn();
 
@@ -146,12 +139,12 @@ public class Astar {
             childBoard[row][col + 1] = 0;
         }
 
-        return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.left, level);
+        return new Node(childBoard, currentNode, calculateStateFullCost(childBoard), Directions.left, level);
     }
 
     // move zero position left
     private Node moveTileRight(Position empty) {
-        int[][] childBoard = makeCopyState(currentState.getState());
+        int[][] childBoard = makeCopyState(currentNode.getState());
         int row = empty.getRow();
         int col = empty.getColumn();
 
@@ -160,7 +153,7 @@ public class Astar {
             childBoard[row][col - 1] = 0;
         }
 
-        return new Node(childBoard, currentState, calculateStateFullCost(childBoard), Directions.right, level);
+        return new Node(childBoard, currentNode, calculateStateFullCost(childBoard), Directions.right, level);
     }
 
     private int[][] makeCopyState(int[][] current) {
@@ -178,7 +171,7 @@ public class Astar {
     private Position getZeroPosition() {
         Position position = new Position();
 
-        int[][] current = currentState.getState();
+        int[][] current = currentNode.getState();
 
         for (int row = 0; row < boardSize; ++row) {
             for (int col = 0; col < boardSize; ++col) {
@@ -222,8 +215,8 @@ public class Astar {
     }
 
     private boolean isGoalReached() {
-        int[][] current = currentState.getState();
-        int[][] goal = finalState.getState();
+        int[][] current = currentNode.getState();
+        int[][] goal = finalNode.getState();
 
         for (int i = 0; i < boardSize; ++i) {
             for (int j = 0; j < boardSize; ++j) {

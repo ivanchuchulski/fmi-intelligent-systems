@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AstarTest {
+class AStarTest {
     @Test
     public void test1() {
         int[][] initialState = {
@@ -14,7 +14,7 @@ class AstarTest {
         final int steps = 2;
         final String moves = new String("LL");
 
-        Astar astar = new Astar(initialState, goalState);
+        AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
@@ -32,7 +32,7 @@ class AstarTest {
         final int steps = 4;
         final String moves = new String("LULU");
 
-        Astar astar = new Astar(initialState, goalState);
+        AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
@@ -62,7 +62,7 @@ class AstarTest {
 
         final String moves2 = new String("ULDRULL");
 
-        Astar astar = new Astar(initialState, goalState);
+        AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
