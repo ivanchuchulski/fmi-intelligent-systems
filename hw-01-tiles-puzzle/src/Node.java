@@ -6,14 +6,14 @@ public class Node {
     private Node parent;
     private int totalCost;
     private String direction;
-    private int path; // the path cost of reaching this node so far node
+    private int stepsFromStart; // the path cost of reaching this node so far node
 
-    public Node(int[][] state, Node parent, int totalCost, String direction, int path) {
+    public Node(int[][] state, Node parent, int totalCost, String direction, int stepsFromStart) {
         setState(state);
         setParent(parent);
         setTotalCost(totalCost);
         setDirection(direction);
-        setPath(path);
+        setStepsFromStart(stepsFromStart);
     }
 
     public void setState(int[][] state) {
@@ -32,8 +32,8 @@ public class Node {
         this.direction = direction;
     }
 
-    public void setPath(int path) {
-        this.path = path;
+    public void setStepsFromStart(int stepsFromStart) {
+        this.stepsFromStart = stepsFromStart;
     }
 
     public int[][] getState() {
@@ -52,8 +52,8 @@ public class Node {
         return direction;
     }
 
-    public int getPath() {
-        return path;
+    public int getStepsFromStart() {
+        return stepsFromStart;
     }
 
     @Override

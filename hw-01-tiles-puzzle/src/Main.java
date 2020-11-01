@@ -20,11 +20,24 @@ public class Main {
             System.out.println("board is solvable");
         }
 
+//
+//        AStar aStarSearch = new AStar(initialState, goalState);
+//
+//        aStarSearch.findSolution();
+//        aStarSearch.printResult();
 
-        AStar aStarSearch = new AStar(initialState, goalState);
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        try {
+            idaStar.findSolution();
+//            idaStar.getMoves();
+            idaStar.printInfo();
 
-        aStarSearch.findSolution();
-        aStarSearch.printResult();
+        }
+        catch (Exception exception) {
+            exception.getMessage();
+            exception.printStackTrace();
+        }
+
     }
 
     private static boolean checkIsBoardSolvable(int[][] initialState) {

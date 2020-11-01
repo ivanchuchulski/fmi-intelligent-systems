@@ -33,7 +33,7 @@ public class AStar {
         while (!fringe.isEmpty()) {
             currentNode = fringe.remove();
 
-            level = currentNode.getPath();
+            level = currentNode.getStepsFromStart();
 
             if (isGoalReached()) {
                 break;
@@ -54,7 +54,7 @@ public class AStar {
     }
 
     public void printResult() {
-        System.out.println(currentNode.getPath());
+        System.out.println(currentNode.getStepsFromStart());
 
         Stack<String> result = new Stack<>();
 
@@ -69,12 +69,9 @@ public class AStar {
     }
 
     public String getMoves() {
-        Stack<String> result = new Stack<>();
         StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < level; i++) {
-//            result.add(currentState.getDirection());
-
             stringBuilder.append(currentNode.getDirection());
             currentNode = currentNode.getParent();
         }
@@ -83,18 +80,18 @@ public class AStar {
     }
 
     public int getSteps() {
-        return currentNode.getPath();
+        return currentNode.getStepsFromStart();
     }
 
     private Node[] getChildNodes() {
-        Position empty = getZeroPosition();
+        Position emptyTile = getEmptyPosition();
 
         ++level;
 
-        Node up = moveTileUp(empty);
-        Node down = moveTileDown(empty);
-        Node left = moveTileLeft(empty);
-        Node right = moveTileRight(empty);
+        Node up = moveTileUp(emptyTile);
+        Node down = moveTileDown(emptyTile);
+        Node left = moveTileLeft(emptyTile);
+        Node right = moveTileRight(emptyTile);
 
         return new Node[]{up, down, left, right};
     }
@@ -168,7 +165,7 @@ public class AStar {
         return copyState;
     }
 
-    private Position getZeroPosition() {
+    private Position getEmptyPosition() {
         Position position = new Position();
 
         int[][] current = currentNode.getState();
@@ -202,8 +199,8 @@ public class AStar {
 
                 Position goalPosition = goalStatePositions.get(tile);
 
-                manhattanSum += goalPosition.getRow() - row;
-                manhattanSum += goalPosition.getColumn() - col;
+                manhattanSum += Math.abs(goalPosition.getRow() - row);
+                manhattanSum += Math.abs(goalPosition.getColumn() - col);
             }
         }
 
