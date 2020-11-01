@@ -6,8 +6,6 @@ public class IDAStar {
     private final int boardSize;
     private int level;
 
-    private boolean goalFound = false;
-
     private Map<Integer, Position> goalStatePositions;
 
     public IDAStar(int[][] initialState, int[][] goalState) {
@@ -38,14 +36,19 @@ public class IDAStar {
         return stringBuilder.reverse().toString();
     }
 
+    public int getSteps() {
+        return level;
+    }
+
     public void printInfo() {
         String moves = getMoves();
 
         System.out.println("moves : " + moves);
         System.out.println("length " + moves.length());
+        System.out.println("length " + level);
     }
 
-    public void findSolution() throws Exception {
+    public void findSolution() {
         int currentLimit = manhattanSum(currentNode.getState());
         int totalCostToCurrentNode = 0;
         final int FOUND = 0;
@@ -57,13 +60,14 @@ public class IDAStar {
                 break;
             }
             if (smallestLimitOverCurrent == Integer.MAX_VALUE) {
-                throw new Exception("unreachable goal");
+//                throw new Exception("unreachable goal");
+                return;
             }
 
             currentLimit = smallestLimitOverCurrent;
             level = 0;
 
-            System.out.println(currentLimit);
+//            System.out.println(currentLimit);
         }
     }
 
