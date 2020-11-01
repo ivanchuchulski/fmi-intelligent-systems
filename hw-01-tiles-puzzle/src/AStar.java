@@ -8,8 +8,8 @@ public class AStar {
     private Map<Integer, Position> goalStatePositions;
 
     public AStar(int[][] initialState, int[][] goalState) {
-        this.currentNode = new Node(initialState, null, manhattanSum(initialState), "", level);
-        this.finalNode = new Node(goalState, null, -1, "", -1);
+        this.currentNode = new Node(initialState, null, "", level, manhattanSum(initialState));
+        this.finalNode = new Node(goalState, null, "", -1, -1);
         this.boardSize = initialState.length;
         this.level = 0;
         goalStatePositions = new HashMap<>();
@@ -33,7 +33,7 @@ public class AStar {
         while (!fringe.isEmpty()) {
             currentNode = fringe.remove();
 
-            level = currentNode.getStepsFromStart();
+            level = currentNode.getStepsFromStartG();
 
             if (isGoalReached()) {
                 break;
@@ -54,7 +54,7 @@ public class AStar {
     }
 
     public void printResult() {
-        System.out.println(currentNode.getStepsFromStart());
+        System.out.println(currentNode.getStepsFromStartG());
 
         Stack<String> result = new Stack<>();
 
@@ -80,7 +80,7 @@ public class AStar {
     }
 
     public int getSteps() {
-        return currentNode.getStepsFromStart();
+        return currentNode.getStepsFromStartG();
     }
 
     private Node[] getChildNodes() {
@@ -107,7 +107,7 @@ public class AStar {
             childBoard[row + 1][col] = Main.EMPTY_TILE;
         }
 
-        return new Node(childBoard, currentNode, calculateStateFullCost(childBoard), Directions.up, level);
+        return new Node(childBoard, currentNode, Directions.up, level, calculateStateFullCost(childBoard));
     }
 
 
@@ -122,7 +122,7 @@ public class AStar {
             childBoard[row - 1][col] = Main.EMPTY_TILE;
         }
 
-        return new Node(childBoard, currentNode, calculateStateFullCost(childBoard), Directions.down, level);
+        return new Node(childBoard, currentNode, Directions.down, level, calculateStateFullCost(childBoard));
     }
 
     // move zero position right
@@ -136,7 +136,7 @@ public class AStar {
             childBoard[row][col + 1] = 0;
         }
 
-        return new Node(childBoard, currentNode, calculateStateFullCost(childBoard), Directions.left, level);
+        return new Node(childBoard, currentNode, Directions.left, level, calculateStateFullCost(childBoard));
     }
 
     // move zero position left
@@ -150,7 +150,7 @@ public class AStar {
             childBoard[row][col - 1] = 0;
         }
 
-        return new Node(childBoard, currentNode, calculateStateFullCost(childBoard), Directions.right, level);
+        return new Node(childBoard, currentNode, Directions.right, level, calculateStateFullCost(childBoard));
     }
 
     private int[][] makeCopyState(int[][] current) {

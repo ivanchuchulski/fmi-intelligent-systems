@@ -4,16 +4,16 @@ import java.util.Comparator;
 public class Node {
     private int[][] state;
     private Node parent;
-    private int totalCost;
+    private int totalCostF;
     private String direction;
-    private int stepsFromStart; // the path cost of reaching this node so far node
+    private int stepsFromStartG; // the path cost of reaching this node so far node
 
-    public Node(int[][] state, Node parent, int totalCost, String direction, int stepsFromStart) {
+    public Node(int[][] state, Node parent, String direction, int stepsFromStartG, int totalCostF) {
         setState(state);
         setParent(parent);
-        setTotalCost(totalCost);
         setDirection(direction);
-        setStepsFromStart(stepsFromStart);
+        setStepsFromStartG(stepsFromStartG);
+        setTotalCostF(totalCostF);
     }
 
     public void setState(int[][] state) {
@@ -24,16 +24,16 @@ public class Node {
         this.parent = parent;
     }
 
-    public void setTotalCost(int totalCost) {
-        this.totalCost = totalCost;
+    public void setTotalCostF(int totalCostF) {
+        this.totalCostF = totalCostF;
     }
 
     public void setDirection(String direction) {
         this.direction = direction;
     }
 
-    public void setStepsFromStart(int stepsFromStart) {
-        this.stepsFromStart = stepsFromStart;
+    public void setStepsFromStartG(int stepsFromStartG) {
+        this.stepsFromStartG = stepsFromStartG;
     }
 
     public int[][] getState() {
@@ -44,16 +44,16 @@ public class Node {
         return parent;
     }
 
-    public int getTotalCost() {
-        return totalCost;
+    public int getTotalCostF() {
+        return totalCostF;
     }
 
     public String getDirection() {
         return direction;
     }
 
-    public int getStepsFromStart() {
-        return stepsFromStart;
+    public int getStepsFromStartG() {
+        return stepsFromStartG;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class Node {
     public static class NodeComparator implements Comparator<Node> {
         @Override
         public int compare(Node left, Node right) {
-            return left.getTotalCost() - right.getTotalCost();
+            return left.getTotalCostF() - right.getTotalCostF();
         }
 
     }

@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,6 +63,128 @@ class IDAStarTest {
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
     }
+
+    @Test
+    public void test5() {
+        int[][] initialState = buildBoardFromString("162530478");
+        int[][] goalState = Main.generateGoalState(initialState);
+
+        final int steps = 9;
+        final String moves2 = new String("RDLURRULL");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves2, idaStar.getMoves());
+    }
+
+    @Test
+    public void test6() {
+        int[][] initialState = buildBoardFromString("512630478");
+        int[][] goalState = Main.generateGoalState(initialState);
+
+        final int steps = 11;
+        final String moves2 = new String("RRDLLURRULL");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves2, idaStar.getMoves());
+    }
+
+    @Test
+    public void test7() {
+        int[][] initialState = buildBoardFromString("126350478");
+        int[][] goalState = Main.generateGoalState(initialState);
+
+        final int steps = 13;
+        final String moves2 = new String("DRURULLDRDLUU");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves2, idaStar.getMoves());
+    }
+
+    @Test
+    public void test8() {
+        int[][] initialState = buildBoardFromString("436871052");
+        int[][] goalState = Main.generateGoalState(initialState);
+
+        final int steps = 18;
+        final String moves2 = new String("DLLDRUULDRURDDLULU");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves2, idaStar.getMoves());
+    }
+
+    @Test
+    public void test9() {
+        int[][] initialState = buildBoardFromString("503284671");
+        int[][] goalState = Main.generateGoalState(initialState);
+
+        final int steps = 23;
+        final String moves2 = new String("RUULLDRRULLDRRULDDRUULL");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves2, idaStar.getMoves());
+    }
+
+    @Test
+    public void test10() {
+        int[][] initialState = buildBoardFromString("874320651");
+        int[][] goalState = Main.generateGoalState(initialState);
+
+        final int steps = 25;
+        final String moves2 = new String("URDRDLLURURDDLLUURRDDLULU");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves2, idaStar.getMoves());
+    }
+
+    @Test
+    public void test11() {
+        int[][] initialState = buildBoardFromString("876543021");
+        int[][] goalState = Main.generateGoalState(initialState);
+
+        final int steps = 28;
+        final String moves2 = new String("DDLURULDLURRDDLULDRUURDDLUUL");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves2, idaStar.getMoves());
+    }
+
+    @Test
+    public void test12() {
+        int[][] initialState = buildBoardFromString("876543210");
+        int[][] goalState = Main.generateGoalState(initialState);
+
+        final int steps = 30;
+        final String moves2 = new String("DRDRUULDDRUULDDLUURDDLURDRULUL");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves2, idaStar.getMoves());
+    }
+
+
 
 
     private int[][] buildBoardFromString(String boardAsString) {
