@@ -10,41 +10,45 @@ public class Main {
 
         printBoard(initialState);
 
-        if (!checkIsBoardSolvable(initialState)) {
-            System.out.println("board is unsolvable");
-            return;
-        }
-        else {
-            System.out.println("board is solvable");
-        }
-
-//
-//        AStar aStarSearch = new AStar(initialState, goalState);
-//
-//        aStarSearch.findSolution();
-//        aStarSearch.printResult();
-
-        IDAStar idaStar = new IDAStar(initialState, goalState);
         try {
-            idaStar.findSolution();
-//            idaStar.getMoves();
-            idaStar.printInfo();
+            checkIsBoardSolvable(initialState);
 
+//            solveWithAStar(initialState, goalState);
+
+            solveWithIDAStar(initialState, goalState);
         }
         catch (Exception exception) {
-            exception.getMessage();
-            exception.printStackTrace();
+            System.out.println(exception.getMessage());
         }
+    }
+
+    private static void solveWithAStar(int[][] initialState, int[][] goalState) {
+        AStar aStarSearch = new AStar(initialState, goalState);
+
+        aStarSearch.findSolution();
+        aStarSearch.printResult();
+    }
+
+    private static void solveWithIDAStar(int[][] initialState, int[][] goalState) {
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+
+        idaStar.findSolution();
+//        idaStar.getMoves();
+        idaStar.printInfo();
 
     }
 
-    private static boolean checkIsBoardSolvable(int[][] initialState) {
+    private static void checkIsBoardSolvable(int[][] initialState) throws Exception {
+        int boardLength = initialState.length;
+        int emptyPositionRow = 0;
+
         ArrayList<Integer> arr = new ArrayList<>();
         InversionsCounter inversionsCounter = new InversionsCounter();
 
-        for (int i = 0; i < initialState.length; i++) {
-            for (int j = 0; j < initialState.length; j++) {
+        for (int i = 0; i < boardLength; i++) {
+            for (int j = 0; j < boardLength; j++) {
                 if (initialState[i][j] == EMPTY_TILE) {
+                    emptyPositionRow = i;
                     continue;
                 }
 
@@ -56,9 +60,18 @@ public class Main {
 
         // when the board is nxn where n is odd number
         // the board is solvable if the number of inversions is even
-        boolean evenInversions = numberOfInversions % 2 == 0;
+        // That is, when n is even, an n-by-n board is solvable if and only if the number of inversions plus the row of the blank
+        //square is odd.
 
-        return evenInversions;
+        if (isOdd(boardLength) && isEven(numberOfInversions)) {
+            ;
+        }
+        else if ((isEven(boardLength) && (isOdd(emptyPositionRow + numberOfInversions)))) {
+            ;
+        }
+        else{
+            throw new Exception("board is unsolvable");
+        }
     }
 
     private static int[][] inputBoard() {
@@ -68,7 +81,7 @@ public class Main {
         System.out.print("enter number of tiles (e.g. 8 for 3x3, 15 for 4x4, etc) : ");
         int boardSize = scanner.nextInt();
 
-        boardSize = (int)Math.sqrt(boardSize + 1);
+        boardSize = (int) Math.sqrt(boardSize + 1);
 
         board = new int[boardSize][boardSize];
 
@@ -98,6 +111,14 @@ public class Main {
         }
 
         return goalState;
+    }
+
+    private static boolean isEven(int number) {
+        return number % 2 == 0;
+    }
+
+    private static boolean isOdd(int number) {
+        return number % 2 == 1;
     }
 
     public static void printBoard(int[][] board) {

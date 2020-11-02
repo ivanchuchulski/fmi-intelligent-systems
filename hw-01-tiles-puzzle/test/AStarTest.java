@@ -6,10 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AStarTest {
     @Test
     public void test1() {
-        int[][] initialState = {
-                {1, 2, 3},
-                {4, 5, 6},
-                {0, 7, 8}};
+        int[][] initialState = buildBoardFromString("123456078");
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 2;
@@ -24,10 +21,7 @@ class AStarTest {
 
     @Test
     public void test2() {
-        int[][] initialState = {
-                {0, 1, 3},
-                {4, 2, 5},
-                {7, 8, 6}};
+        int[][] initialState = buildBoardFromString("013425786");
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 4;
@@ -42,21 +36,18 @@ class AStarTest {
 
     @Test
     public void test3() {
-        // this board has more than one solution
-        int[][] initialState = {
-                {1, 2, 3},
-                {0, 7, 6},
-                {5, 4, 8}};
+        // has more than one solution
+        int[][] initialState = buildBoardFromString("123076548");
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 7;
-        final String moves2 = new String("ULDRULL");
+        final String moves = new String("ULDRULL");
 
         AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertEquals(moves2, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     @Test
@@ -65,13 +56,13 @@ class AStarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 8;
-        final String moves2 = new String("RRDDLUUL");
+        final String moves = new String("RRDDLUUL");
 
         AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertEquals(moves2, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     @Test
@@ -80,13 +71,13 @@ class AStarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 9;
-        final String moves2 = new String("RDLURRULL");
+        final String moves = new String("RDLURRULL");
 
         AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertEquals(moves2, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     @Test
@@ -95,13 +86,13 @@ class AStarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 11;
-        final String moves2 = new String("RRDLLURRULL");
+        final String moves = new String("RRDLLURRULL");
 
         AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertEquals(moves2, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     @Test
@@ -110,13 +101,13 @@ class AStarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 13;
-        final String moves2 = new String("DRURULLDRDLUU");
+        final String moves = new String("DRURULLDRDLUU");
 
         AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertEquals(moves2, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     @Test
@@ -125,13 +116,13 @@ class AStarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 18;
-        final String moves2 = new String("DLLDRUULDRURDDLULU");
+        final String moves = new String("DLLDRUULDRURDDLULU");
 
         AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertEquals(moves2, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     @Test
@@ -140,13 +131,13 @@ class AStarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 23;
-        final String moves2 = new String("RUULLDRRULLDRRULDDRUULL");
+        final String moves = new String("RUULLDRRULLDRRULDDRUULL");
 
         AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertEquals(moves2, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     @Test
@@ -155,28 +146,30 @@ class AStarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 25;
-        final String moves2 = new String("URDRDLLURURDDLLUURRDDLULU");
+        final String moves = new String("URDRDLLURURDDLLUURRDDLULU");
 
         AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertEquals(moves2, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     @Test
     public void test11() {
+        // has 2 solutions
         int[][] initialState = buildBoardFromString("876543021");
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 28;
-        final String moves2 = new String("DDLURULDLURRDDLULDRUURDDLUUL");
+        final String moves1 = new String("DDLURULDLURRDDLULDRUURDDLUUL");
+        final String moves = new String("DDLULURRDDLULDRUULDRURDDLULU");
 
         AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertEquals(moves2, astar.getMoves());
+        assertEquals(moves1, astar.getMoves());
     }
 
     @Test
@@ -186,13 +179,13 @@ class AStarTest {
         int[][] goalState = Main.generateGoalState(initialState);
 
         final int steps = 30;
-        final String moves2 = new String("DRDRUULDDRUULDDLUURDDLURDRULUL");
+        final String moves = new String("DRDRUULDDRUULDDLUURDDLURDRULUL");
 
         AStar astar = new AStar(initialState, goalState);
         astar.findSolution();
 
         assertEquals(steps, astar.getSteps());
-        assertEquals(moves2, astar.getMoves());
+        assertEquals(moves, astar.getMoves());
     }
 
     private int[][] buildBoardFromString(String boardAsString) {

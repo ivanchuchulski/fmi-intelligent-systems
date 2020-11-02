@@ -84,13 +84,13 @@ public class IDAStar {
 //            finalNode = finalNode.getParent();
 //        }
 
+        
         while (true) {
             stringBuilder.append(finalNode.getDirection());
             finalNode = finalNode.getParent();
 
             if (finalNode == null) {
                 break;
-
             }
         }
 
