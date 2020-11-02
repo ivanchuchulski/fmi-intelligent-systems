@@ -92,6 +92,8 @@ public class Main {
             }
         }
 
+        scanner.close();
+
         return board;
     }
 

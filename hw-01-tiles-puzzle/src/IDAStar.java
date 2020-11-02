@@ -3,12 +3,12 @@ import java.util.*;
 public class IDAStar {
     private Node initialNode;
     private Node finalNode;
+
     private final int boardSize;
     private int level;
 
     private int solutionSteps;
     private String solutionMoves;
-
     private Map<Integer, Position> goalStatePositions;
 
     public IDAStar(int[][] initialState, int[][] goalState) {
@@ -16,8 +16,8 @@ public class IDAStar {
         this.boardSize = initialState.length;
         goalStatePositions = new HashMap<>();
 
-        for (int row = 0; row < goalState.length; row++) {
-            for (int col = 0; col < goalState.length; col++) {
+        for (int row = 0; row < boardSize; row++) {
+            for (int col = 0; col < boardSize; col++) {
                 if (goalState[row][col] == Main.EMPTY_TILE) {
                     continue;
                 }
@@ -51,7 +51,9 @@ public class IDAStar {
 
         System.out.println("moves : " + moves);
         System.out.println("length " + moves.length());
-        System.out.println("length " + level);
+
+        // sometimes level is incorrect
+//        System.out.println("length " + level);
     }
 
     public void findSolution() {
@@ -66,14 +68,11 @@ public class IDAStar {
                 break;
             }
             if (smallestLimitOverCurrent == Integer.MAX_VALUE) {
-                System.out.println("unreachable goal");
-                return;
+                throw new RuntimeException("unreachable goal");
             }
 
             currentLimit = smallestLimitOverCurrent;
             level = 0;
-
-//            System.out.println(currentLimit);
         }
 
 
@@ -84,7 +83,7 @@ public class IDAStar {
 //            finalNode = finalNode.getParent();
 //        }
 
-        
+        solutionSteps = finalNode.getStepsFromStartG();
         while (true) {
             stringBuilder.append(finalNode.getDirection());
             finalNode = finalNode.getParent();
@@ -95,20 +94,21 @@ public class IDAStar {
         }
 
         solutionMoves = stringBuilder.reverse().toString();
-        solutionSteps = solutionMoves.length();
+
+//        solutionSteps = solutionMoves.length();
     }
 
     private int recursiveSearch(Node node, int stepsToNodeG, int currentFLimit) {
         final int FOUND = 0;
-        int f = stepsToNodeG + manhattanSum(node.getState());
+//        int f = stepsToNodeG + manhattanSum(node.getState());
 
-//        if (node.getTotalCost() > currentLimit) {
-//            return node.getTotalCost();
-//        }
-
-        if (f > currentFLimit) {
-            return f;
+        if (node.getTotalCostF() > currentFLimit) {
+            return node.getTotalCostF();
         }
+
+//        if (f > currentFLimit) {
+//            return f;
+//        }
 
         if (isGoalReached(node)) {
             finalNode = node;
@@ -118,7 +118,6 @@ public class IDAStar {
         int minF = Integer.MAX_VALUE;
 
         for (Node child : getChildNodes(node)) {
-//            int temp = recursiveSearch(child, totalCostToCurrentNode + manhattanSum(child.getState()), currentLimit);
             int temp = recursiveSearch(child, stepsToNodeG + 1, currentFLimit);
 
             if (temp == FOUND) {
@@ -154,10 +153,6 @@ public class IDAStar {
         return manhattanSum;
     }
 
-    private int calculateStateFullCost(int[][] state) {
-        return level + manhattanSum(state);
-    }
-
     private boolean isGoalReached(Node node) {
         int[][] current = node.getState();
         int[][] goal = finalNode.getState();
@@ -174,14 +169,16 @@ public class IDAStar {
     }
 
     private ArrayList<Node> getChildNodes(Node node) {
+        // incrementing here is incorrect, when using recursion
+//        ++level;
+
         Position empty = getZeroPosition(node);
-        ++level;
+
         Node up = moveTileUp(empty, node);
         Node down = moveTileDown(empty, node);
         Node left = moveTileLeft(empty, node);
         Node right = moveTileRight(empty, node);
 
-        // maybe add checks for null
         ArrayList<Node> children = new ArrayList<>();
         if (up != null) {
             children.add(up);
@@ -211,7 +208,7 @@ public class IDAStar {
             childBoard[row][col] = childBoard[row + 1][col];
             childBoard[row + 1][col] = Main.EMPTY_TILE;
 
-            return new Node(childBoard, node, Directions.up, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + manhattanSum(childBoard));
+            return new Node(childBoard, node, Directions.up, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
         }
         else {
             return null;
@@ -228,7 +225,7 @@ public class IDAStar {
         if (empty.getRow() > 0) {
             childBoard[row][col] = childBoard[row - 1][col];
             childBoard[row - 1][col] = Main.EMPTY_TILE;
-            return new Node(childBoard, node, Directions.down, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + manhattanSum(childBoard));
+            return new Node(childBoard, node, Directions.down, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
         }
         else {
             return null;
@@ -245,7 +242,7 @@ public class IDAStar {
         if (col < boardSize - 1) {
             childBoard[row][col] = childBoard[row][col + 1];
             childBoard[row][col + 1] = 0;
-            return new Node(childBoard, node, Directions.left, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + manhattanSum(childBoard));
+            return new Node(childBoard, node, Directions.left, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
         }
         else {
             return null;
@@ -262,7 +259,7 @@ public class IDAStar {
         if (col > 0) {
             childBoard[row][col] = childBoard[row][col - 1];
             childBoard[row][col - 1] = 0;
-            return new Node(childBoard, node, Directions.right, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + manhattanSum(childBoard));
+            return new Node(childBoard, node, Directions.right, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
         }
         else {
             return null;

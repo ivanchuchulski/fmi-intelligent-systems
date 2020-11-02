@@ -194,9 +194,6 @@ public class AStar {
                     continue;
                 }
 
-//                int rowGoal = Math.abs(((tile - 1) / boardSize));
-//                int colGoal = Math.abs(((tile - 1) % boardSize));
-
                 Position goalPosition = goalStatePositions.get(tile);
 
                 manhattanSum += Math.abs(goalPosition.getRow() - row);
