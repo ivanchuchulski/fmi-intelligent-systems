@@ -13,7 +13,7 @@ class IDAStarTest {
         final String moves = new String("LL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -28,7 +28,7 @@ class IDAStarTest {
         final String moves = new String("DLLU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -43,7 +43,7 @@ class IDAStarTest {
         final String moves = new String("URDLU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -58,7 +58,7 @@ class IDAStarTest {
         final String moves = new String("RRDDLUUL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -73,7 +73,7 @@ class IDAStarTest {
         final String moves = new String("RDLURRULL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -88,7 +88,7 @@ class IDAStarTest {
         final String moves = new String("RRDLLURRULL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -103,7 +103,7 @@ class IDAStarTest {
         final String moves = new String("DRURULLDRDLUU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -118,7 +118,7 @@ class IDAStarTest {
         final String moves = new String("DLLDRUULDRURDDLULU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -133,7 +133,7 @@ class IDAStarTest {
         final String moves = new String("RUULLDRRULLDRRULDDRUULL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -149,7 +149,7 @@ class IDAStarTest {
         final String moves2 = new String("URDRDLULDRUURDDLULURRDLLU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves2, idaStar.getMoves());
@@ -166,7 +166,7 @@ class IDAStarTest {
         final String moves = new String("DDLULURRDDLULDRUULDRURDDLULU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -182,7 +182,7 @@ class IDAStarTest {
         final String moves = new String("DRDRUULDDRUULDDLUURDDLURDRULUL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -199,7 +199,7 @@ class IDAStarTest {
         final String moves = new String("UU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -214,7 +214,7 @@ class IDAStarTest {
         final String moves = new String("UULL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -229,7 +229,7 @@ class IDAStarTest {
         final String moves = new String("DLUULU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -244,7 +244,7 @@ class IDAStarTest {
         final String moves = new String("DRUULDRUUL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -259,7 +259,7 @@ class IDAStarTest {
         final String moves = new String("ULDDLDLURURULL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -274,7 +274,7 @@ class IDAStarTest {
         final String moves = new String("DLUURDLDRRDRULULUL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -289,7 +289,7 @@ class IDAStarTest {
         final String moves = new String("LDDRRURUULLDDLDRURULLU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -304,7 +304,7 @@ class IDAStarTest {
         final String moves = new String("LDDRUURRULDRDLDRULLLUURRDLUL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -319,7 +319,37 @@ class IDAStarTest {
         final String moves = new String("ULDLUURRDRDDLUURDDLUULDLURDDLURULU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves, idaStar.getMoves());
+    }
+
+    @Test
+    public void test22() {
+        int[][] initialState = buildBoardFromArray(new int[]{2, 6, 4, 8, 1, 10, 7, 3, 5, 13, 11, 15, 12, 14, 9, 0});
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 38;
+        final String moves = new String("DDRRDRUULULDRURDLLDLUURRDLULDRDLDRUUUL");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution_orig();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves, idaStar.getMoves());
+    }
+
+    @Test
+    public void test23() {
+        int[][] initialState = buildBoardFromArray(new int[]{14, 5, 11, 6, 9, 0, 4, 3, 15, 1, 7, 12, 8, 2, 13, 10});
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 44;
+        final String moves = new String("UULLDRRRULDRDDLURDLLLURURDDLURDLLUURURDLDLUU");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());
@@ -327,13 +357,12 @@ class IDAStarTest {
 
     @Test
     @Disabled
-    public void test22() {
-        int[][] initialState = buildBoardFromArray(new int[]{
-                2, 6, 4, 8, 1, 10, 7, 3, 5, 13, 11, 15, 12, 14, 9, 0});
+    public void test24() {
+        int[][] initialState = buildBoardFromArray(new int[]{13, 11, 9, 3, 14, 7, 1, 4, 0, 5, 10, 12, 15, 2, 6, 8});
         int[][] goalState = generateDefualtGoalState(initialState);
 
-        final int steps = 38;
-        final String moves = new String("DDRRDRUULULDRURDLLDLUURRDLULDRDLDRUUUL");
+        final int steps = 46;
+        final String moves = new String("DDLUUURDDLLDRUULURRDDDLULULURRDDRULDLDLUURRULL");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
@@ -344,7 +373,7 @@ class IDAStarTest {
 
     @Test
     @Disabled
-    public void test23() {
+    public void test25() {
         int[][] initialState = buildBoardFromArray(new int[]{2, 9, 3, 5, 8, 11, 12, 7, 15, 4, 0, 13, 6, 1, 10, 14});
         int[][] goalState = generateDefualtGoalState(initialState);
 
@@ -352,7 +381,7 @@ class IDAStarTest {
         final String moves = new String("LDRRUULDLDRRRULULLDDRRRUULDDDLLURDRRULLURRDLUULDLU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
-        idaStar.findSolution();
+        idaStar.findSolution_orig();
 
         assertEquals(steps, idaStar.getSteps());
         assertEquals(moves, idaStar.getMoves());

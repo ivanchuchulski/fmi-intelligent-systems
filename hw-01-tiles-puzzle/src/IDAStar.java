@@ -91,14 +91,12 @@ public class IDAStar {
         final int FOUND = 0;
         // slower
 //        int f = stepsToNodeG + manhattanSum(node.getState());
-        //        if (f > currentFLimit) {
+//           if (f > currentFLimit) {
 //            return f;
 //        }
         if (node.getTotalCostF() > currentFLimit) {
             return node.getTotalCostF();
         }
-
-
 
         if (isGoalReached(node)) {
             finalNode = node;
@@ -108,6 +106,10 @@ public class IDAStar {
         int minF = Integer.MAX_VALUE;
 
         for (Node child : getChildNodes(node)) {
+            if (node.getParent() != null && node.getParent().equals(child)) {
+                continue;
+            }
+
             int temp = recursiveSearch_orig(child, stepsToNodeG + 1, currentFLimit);
 
             if (temp == FOUND) {

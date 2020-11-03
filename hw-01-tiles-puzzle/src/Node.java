@@ -74,11 +74,7 @@ public class Node {
         }
         final Node other = (Node) obj;
 
-        if (!Arrays.deepEquals(this.state, other.state)) {
-            return false;
-        }
-
-        return true;
+        return Arrays.deepEquals(this.state, other.state);
     }
 
     public static class NodeComparator implements Comparator<Node> {
