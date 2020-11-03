@@ -12,6 +12,8 @@ public class IDAStar {
 
     private Map<Integer, Position> goalStatePositions;
 
+    final int FOUND = 0;
+
     public IDAStar(int[][] initialState, int[][] goalState) {
         this.level = 0;
         this.boardSize = initialState.length;
@@ -31,15 +33,6 @@ public class IDAStar {
     }
 
     public String getMoves() {
-//        StringBuilder stringBuilder = new StringBuilder();
-//
-//        for (int i = 0; i < level; i++) {
-//            stringBuilder.append(finalNode.getDirection());
-//            finalNode = finalNode.getParent();
-//        }
-//
-//        return stringBuilder.reverse().toString();
-
         return solutionMoves;
     }
 
@@ -53,17 +46,16 @@ public class IDAStar {
         System.out.println("moves : " + moves);
         System.out.println("length " + moves.length());
 
-        // sometimes level is incorrect
-//        System.out.println("length " + level);
+        long aftermem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        System.out.println("\nMemory used: " + (aftermem / 1024) + "kb");
     }
 
-    public void findSolution() {
+    public void findSolution_orig() {
         int currentLimit = manhattanSum(initialNode.getState());
-        int totalCostToCurrentNode = 0;
         final int FOUND = 0;
 
         while (true) {
-            int smallestLimitOverCurrent = recursiveSearch(initialNode, 0, currentLimit);
+            int smallestLimitOverCurrent = recursiveSearch_orig(initialNode, 0, currentLimit);
 
             if (smallestLimitOverCurrent == FOUND) {
                 break;
@@ -95,17 +87,18 @@ public class IDAStar {
 //        solutionSteps = solutionMoves.length();
     }
 
-    private int recursiveSearch(Node node, int stepsToNodeG, int currentFLimit) {
+    private int recursiveSearch_orig(Node node, int stepsToNodeG, int currentFLimit) {
         final int FOUND = 0;
+        // slower
 //        int f = stepsToNodeG + manhattanSum(node.getState());
-
+        //        if (f > currentFLimit) {
+//            return f;
+//        }
         if (node.getTotalCostF() > currentFLimit) {
             return node.getTotalCostF();
         }
 
-//        if (f > currentFLimit) {
-//            return f;
-//        }
+
 
         if (isGoalReached(node)) {
             finalNode = node;
@@ -115,7 +108,7 @@ public class IDAStar {
         int minF = Integer.MAX_VALUE;
 
         for (Node child : getChildNodes(node)) {
-            int temp = recursiveSearch(child, stepsToNodeG + 1, currentFLimit);
+            int temp = recursiveSearch_orig(child, stepsToNodeG + 1, currentFLimit);
 
             if (temp == FOUND) {
                 return FOUND;
@@ -128,6 +121,78 @@ public class IDAStar {
         return minF;
     }
 
+    public void findSolution() {
+        int currentLimit = manhattanSum(initialNode.getState());
+        ArrayList<Node> path = new ArrayList<>();
+
+        path.add(0, initialNode);
+
+        while (true) {
+            int smallestLimitOverCurrent = recursiveSearch(path, 0, currentLimit);
+
+            if (smallestLimitOverCurrent == FOUND) {
+                break;
+            }
+            if (smallestLimitOverCurrent == Integer.MAX_VALUE) {
+                throw new RuntimeException("unreachable goal");
+            }
+
+            currentLimit = smallestLimitOverCurrent;
+            level = 0;
+        }
+
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        solutionSteps = finalNode.getStepsFromStartG();
+
+        while (true) {
+            stringBuilder.append(finalNode.getDirection());
+            finalNode = finalNode.getParent();
+
+            if (finalNode == null) {
+                break;
+            }
+        }
+
+        solutionMoves = stringBuilder.reverse().toString();
+
+//        solutionSteps = solutionMoves.length();
+    }
+
+    private int recursiveSearch(ArrayList<Node> path, int stepsToNodeG, int currentFLimit) {
+        Node node = path.get(path.size() - 1);
+
+        if (node.getTotalCostF() > currentFLimit) {
+            return node.getTotalCostF();
+        }
+
+        if (isGoalReached(node)) {
+            finalNode = node;
+            return FOUND;
+        }
+
+        int minF = Integer.MAX_VALUE;
+
+        for (Node child : getChildNodes(node)) {
+            if (!path.contains(child)) {
+                path.add(child);
+
+                int temp = recursiveSearch(path, stepsToNodeG + 1, currentFLimit);
+
+                if (temp == FOUND) {
+                    return FOUND;
+                }
+                if (temp < minF) {
+                    minF = temp;
+                }
+
+                path.remove(path.size() - 1);
+            }
+        }
+
+        return minF;
+    }
 
     private int manhattanSum(int[][] state) {
         int manhattanSum = 0;
@@ -166,9 +231,6 @@ public class IDAStar {
     }
 
     private ArrayList<Node> getChildNodes(Node node) {
-        // incrementing here is incorrect, when using recursion
-//        ++level;
-
         Position empty = getZeroPosition(node);
 
         Node up = moveTileUp(empty, node);

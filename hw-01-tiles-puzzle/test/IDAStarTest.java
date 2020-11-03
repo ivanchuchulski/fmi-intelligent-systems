@@ -173,7 +173,6 @@ class IDAStarTest {
     }
 
     @Test
-    @Disabled
     public void test12() {
         // has 2 solutions
         int[][] initialState = buildBoardFromString("876543210");
@@ -329,12 +328,28 @@ class IDAStarTest {
     @Test
     @Disabled
     public void test22() {
-        int[][] initialState = buildBoardFromArray(new int[]{3, 14, 2, 4, 9, 1, 7, 8, 0, 12, 6, 10, 13, 5, 11, 15
-        });
+        int[][] initialState = buildBoardFromArray(new int[]{
+                2, 6, 4, 8, 1, 10, 7, 3, 5, 13, 11, 15, 12, 14, 9, 0});
         int[][] goalState = generateDefualtGoalState(initialState);
 
         final int steps = 38;
-        final String moves = new String("ULDLUURRDRDDLUURDDLUULDLURDDLURULU");
+        final String moves = new String("DDRRDRUULULDRURDLLDLUURRDLULDRDLDRUUUL");
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getSteps());
+        assertEquals(moves, idaStar.getMoves());
+    }
+
+    @Test
+    @Disabled
+    public void test23() {
+        int[][] initialState = buildBoardFromArray(new int[]{2, 9, 3, 5, 8, 11, 12, 7, 15, 4, 0, 13, 6, 1, 10, 14});
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 50;
+        final String moves = new String("LDRRUULDLDRRRULULLDDRRRUULDDDLLURDRRULLURRDLUULDLU");
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
