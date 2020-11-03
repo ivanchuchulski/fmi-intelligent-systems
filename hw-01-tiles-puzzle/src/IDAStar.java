@@ -9,6 +9,7 @@ public class IDAStar {
 
     private int solutionSteps;
     private String solutionMoves;
+
     private Map<Integer, Position> goalStatePositions;
 
     public IDAStar(int[][] initialState, int[][] goalState) {
@@ -78,12 +79,8 @@ public class IDAStar {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-//        for (int i = 0; i < level; i++) {
-//            stringBuilder.append(finalNode.getDirection());
-//            finalNode = finalNode.getParent();
-//        }
-
         solutionSteps = finalNode.getStepsFromStartG();
+
         while (true) {
             stringBuilder.append(finalNode.getDirection());
             finalNode = finalNode.getParent();

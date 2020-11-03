@@ -3,18 +3,20 @@ import java.util.Scanner;
 
 public class Main {
     public static final int EMPTY_TILE = 0;
+    public static int emptyTileIndexInSolution = -1;
 
     public static void main(String[] args) {
+        int emptyTileIndexInSolution;
         int[][] initialState = inputBoard();
         int[][] goalState = generateGoalState(initialState);
 
         printBoard(initialState);
+        printBoard(goalState);
 
         try {
             checkIsBoardSolvable(initialState);
 
 //            solveWithAStar(initialState, goalState);
-
             solveWithIDAStar(initialState, goalState);
         }
         catch (Exception exception) {
@@ -66,11 +68,13 @@ public class Main {
         if (isOdd(boardLength) && isEven(numberOfInversions)) {
             ;
         }
-        else if ((isEven(boardLength) && (isOdd(emptyPositionRow + numberOfInversions)))) {
-            ;
-        }
-        else{
-            throw new Exception("board is unsolvable");
+        else {
+            if ((isEven(boardLength) && (isOdd(emptyPositionRow + numberOfInversions)))) {
+                ;
+            }
+            else {
+                throw new Exception("board is unsolvable");
+            }
         }
     }
 
@@ -79,11 +83,26 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("enter number of tiles (e.g. 8 for 3x3, 15 for 4x4, etc) : ");
-        int boardSize = scanner.nextInt();
+        int numberOfTiles = scanner.nextInt();
 
-        boardSize = (int) Math.sqrt(boardSize + 1);
+        System.out.print("enter index of empty element in the solution [0, #tiles - 1] or -1 for the lowest right : ");
+        int emptyIndexInSolution = scanner.nextInt();
+
+        int boardSize = (int) Math.sqrt(numberOfTiles + 1);
 
         board = new int[boardSize][boardSize];
+
+        if (emptyIndexInSolution == -1) {
+            Main.emptyTileIndexInSolution = numberOfTiles;
+        }
+        else {
+            if (emptyIndexInSolution < 0 || emptyIndexInSolution > numberOfTiles) {
+                throw new RuntimeException("error : wrong empty tile index, it must be within [0, " + numberOfTiles + "] but was " + emptyIndexInSolution);
+            }
+            else {
+                Main.emptyTileIndexInSolution = emptyIndexInSolution;
+            }
+        }
 
         System.out.println("enter the board elements : ");
         for (int i = 0; i < boardSize; i++) {
@@ -103,12 +122,12 @@ public class Main {
 
         for (int i = 0; i < initialBoard.length; i++) {
             for (int j = 0; j < initialBoard.length; j++) {
-                if (i == initialBoard.length - 1 && j == initialBoard.length - 1) {
+                if (i * initialBoard.length + j == Main.emptyTileIndexInSolution) {
                     goalState[i][j] = EMPTY_TILE;
-                    break;
                 }
-
-                goalState[i][j] = tilesNumber++;
+                else {
+                    goalState[i][j] = tilesNumber++;
+                }
             }
         }
 
