@@ -50,12 +50,11 @@ public class IDAStar {
         System.out.println("\nMemory used: " + (aftermem / 1024) + "kb");
     }
 
-    public void findSolution_orig() {
+    public void findSolution() {
         int currentLimit = manhattanSum(initialNode.getState());
-        final int FOUND = 0;
 
         while (true) {
-            int smallestLimitOverCurrent = recursiveSearch_orig(initialNode, 0, currentLimit);
+            int smallestLimitOverCurrent = recursiveSearch(initialNode, 0, currentLimit);
 
             if (smallestLimitOverCurrent == FOUND) {
                 break;
@@ -83,113 +82,36 @@ public class IDAStar {
         }
 
         solutionMoves = stringBuilder.reverse().toString();
-
-//        solutionSteps = solutionMoves.length();
     }
 
-    private int recursiveSearch_orig(Node node, int stepsToNodeG, int currentFLimit) {
-        final int FOUND = 0;
-        // slower
-//        int f = stepsToNodeG + manhattanSum(node.getState());
-//           if (f > currentFLimit) {
-//            return f;
-//        }
-        if (node.getTotalCostF() > currentFLimit) {
-            return node.getTotalCostF();
-        }
-
+    private int recursiveSearch(Node node, int stepsToNodeG, int currentFLimit) {
         if (isGoalReached(node)) {
             finalNode = node;
             return FOUND;
         }
 
+        if (node.getTotalCostF() > currentFLimit) {
+            return node.getTotalCostF();
+        }
+
         int minF = Integer.MAX_VALUE;
 
         for (Node child : getChildNodes(node)) {
+            if (child == null) {
+                continue;
+            }
+
             if (node.getParent() != null && node.getParent().equals(child)) {
                 continue;
             }
 
-            int temp = recursiveSearch_orig(child, stepsToNodeG + 1, currentFLimit);
+            int temp = recursiveSearch(child, stepsToNodeG + 1, currentFLimit);
 
             if (temp == FOUND) {
                 return FOUND;
             }
             if (temp < minF) {
                 minF = temp;
-            }
-        }
-
-        return minF;
-    }
-
-    public void findSolution() {
-        int currentLimit = manhattanSum(initialNode.getState());
-        ArrayList<Node> path = new ArrayList<>();
-
-        path.add(0, initialNode);
-
-        while (true) {
-            int smallestLimitOverCurrent = recursiveSearch(path, 0, currentLimit);
-
-            if (smallestLimitOverCurrent == FOUND) {
-                break;
-            }
-            if (smallestLimitOverCurrent == Integer.MAX_VALUE) {
-                throw new RuntimeException("unreachable goal");
-            }
-
-            currentLimit = smallestLimitOverCurrent;
-            level = 0;
-        }
-
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        solutionSteps = finalNode.getStepsFromStartG();
-
-        while (true) {
-            stringBuilder.append(finalNode.getDirection());
-            finalNode = finalNode.getParent();
-
-            if (finalNode == null) {
-                break;
-            }
-        }
-
-        solutionMoves = stringBuilder.reverse().toString();
-
-//        solutionSteps = solutionMoves.length();
-    }
-
-    private int recursiveSearch(ArrayList<Node> path, int stepsToNodeG, int currentFLimit) {
-        Node node = path.get(path.size() - 1);
-
-        if (node.getTotalCostF() > currentFLimit) {
-            return node.getTotalCostF();
-        }
-
-        if (isGoalReached(node)) {
-            finalNode = node;
-            return FOUND;
-        }
-
-        int minF = Integer.MAX_VALUE;
-
-        for (Node child : getChildNodes(node)) {
-            if (!path.contains(child)) {
-                path.add(child);
-
-                int temp = recursiveSearch(path, stepsToNodeG + 1, currentFLimit);
-
-                if (temp == FOUND) {
-                    return FOUND;
-                }
-                if (temp < minF) {
-                    minF = temp;
-                }
-
-                path.remove(path.size() - 1);
             }
         }
 
@@ -232,7 +154,7 @@ public class IDAStar {
         return true;
     }
 
-    private ArrayList<Node> getChildNodes(Node node) {
+    private Node[] getChildNodes(Node node) {
         Position empty = getZeroPosition(node);
 
         Node up = moveTileUp(empty, node);
@@ -240,32 +162,17 @@ public class IDAStar {
         Node left = moveTileLeft(empty, node);
         Node right = moveTileRight(empty, node);
 
-        ArrayList<Node> children = new ArrayList<>();
-        if (up != null) {
-            children.add(up);
-        }
-
-        if (down != null) {
-            children.add(down);
-        }
-
-        if (left != null) {
-            children.add(left);
-        }
-        if (right != null) {
-            children.add(right);
-        }
-
-        return children;
+        return new Node[]{up, right, left, down};
     }
 
     // move zero position down
     private Node moveTileUp(Position empty, Node node) {
-        int[][] childBoard = makeCopyState(node.getState());
         int row = empty.getRow();
         int col = empty.getColumn();
 
         if (empty.getRow() < boardSize - 1) {
+            int[][] childBoard = makeCopyState(node.getState());
+
             childBoard[row][col] = childBoard[row + 1][col];
             childBoard[row + 1][col] = Main.EMPTY_TILE;
 
@@ -279,11 +186,13 @@ public class IDAStar {
 
     // move zero position up
     private Node moveTileDown(Position empty, Node node) {
-        int[][] childBoard = makeCopyState(node.getState());
+
         int row = empty.getRow();
         int col = empty.getColumn();
 
         if (empty.getRow() > 0) {
+            int[][] childBoard = makeCopyState(node.getState());
+
             childBoard[row][col] = childBoard[row - 1][col];
             childBoard[row - 1][col] = Main.EMPTY_TILE;
             return new Node(childBoard, node, Directions.down, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
@@ -296,11 +205,13 @@ public class IDAStar {
 
     // move zero position right
     private Node moveTileLeft(Position empty, Node node) {
-        int[][] childBoard = makeCopyState(node.getState());
+
         int row = empty.getRow();
         int col = empty.getColumn();
 
         if (col < boardSize - 1) {
+            int[][] childBoard = makeCopyState(node.getState());
+
             childBoard[row][col] = childBoard[row][col + 1];
             childBoard[row][col + 1] = 0;
             return new Node(childBoard, node, Directions.left, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
@@ -313,11 +224,12 @@ public class IDAStar {
 
     // move zero position left
     private Node moveTileRight(Position empty, Node node) {
-        int[][] childBoard = makeCopyState(node.getState());
         int row = empty.getRow();
         int col = empty.getColumn();
 
         if (col > 0) {
+            int[][] childBoard = makeCopyState(node.getState());
+
             childBoard[row][col] = childBoard[row][col - 1];
             childBoard[row][col - 1] = 0;
             return new Node(childBoard, node, Directions.right, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
