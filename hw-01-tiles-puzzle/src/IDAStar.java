@@ -1,26 +1,24 @@
 import java.util.*;
 
 public class IDAStar {
-    private Node initialNode;
+    private final Node initialNode;
     private Node finalNode;
 
     private final int boardSize;
-    private int level;
 
     private int solutionSteps;
     private String solutionMoves;
 
-    private Map<Integer, Position> goalStatePositions;
+    private final Map<Integer, Position> goalStatePositions;
 
     final int FOUND = 0;
 
     public IDAStar(int[][] initialState, int[][] goalState) {
-        this.level = 0;
         this.boardSize = initialState.length;
         goalStatePositions = new HashMap<>();
 
-        for (int row = 0; row < boardSize; row++) {
-            for (int col = 0; col < boardSize; col++) {
+        for (int row = 0; row < initialState.length; row++) {
+            for (int col = 0; col < initialState.length; col++) {
                 if (goalState[row][col] == Main.EMPTY_TILE) {
                     continue;
                 }
@@ -31,8 +29,8 @@ public class IDAStar {
         int initialManh = manhattanSum(initialState);
         Position initialEmpty = findEmptyPosition(initialState);
 
-        this.initialNode = new Node(initialState, null, "", 0, initialManh, initialManh, initialEmpty);
-        this.finalNode = new Node(goalState, null, "", -1, -1, -1, new Position(-1, -1));
+        this.initialNode = new Node(initialState, null, "", 0, initialManh, initialEmpty);
+        this.finalNode = new Node(goalState, null, "", -1, -1, new Position(-1, -1));
     }
 
     public String getMoves() {
@@ -46,8 +44,8 @@ public class IDAStar {
     public void printInfo() {
         String moves = getMoves();
 
-        System.out.println("moves : " + moves);
-        System.out.println("length " + moves.length());
+        System.out.println("#steps : " + getSteps());
+        System.out.println("moves : " + getMoves());
 
         long aftermem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         System.out.println("\nMemory used: " + (aftermem / 1024) + "kb");
@@ -67,34 +65,29 @@ public class IDAStar {
             }
 
             currentLimit = smallestLimitOverCurrent;
-            level = 0;
         }
-
-
-        StringBuilder stringBuilder = new StringBuilder();
 
         solutionSteps = finalNode.getStepsFromStartG();
 
-        while (true) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        do {
             stringBuilder.append(finalNode.getDirection());
             finalNode = finalNode.getParent();
-
-            if (finalNode == null) {
-                break;
-            }
         }
+        while (finalNode != null);
 
         solutionMoves = stringBuilder.reverse().toString();
     }
 
     private int recursiveSearch(Node node, int stepsToNodeG, int currentFLimit) {
+        if (node.getTotalCostF() > currentFLimit) {
+            return node.getTotalCostF();
+        }
+
         if (isGoalReached(node)) {
             finalNode = node;
             return FOUND;
-        }
-
-        if (node.getTotalCostF() > currentFLimit) {
-            return node.getTotalCostF();
         }
 
         int minF = Integer.MAX_VALUE;
@@ -119,27 +112,6 @@ public class IDAStar {
         }
 
         return minF;
-    }
-
-    private int manhattanSum(int[][] state) {
-        int manhattanSum = 0;
-
-        for (int row = 0; row < boardSize; ++row) {
-            for (int col = 0; col < boardSize; ++col) {
-                int tile = state[row][col];
-
-                if (tile == Main.EMPTY_TILE) {
-                    continue;
-                }
-
-                Position goalPosition = goalStatePositions.get(tile);
-
-                manhattanSum += Math.abs(goalPosition.getRow() - row);
-                manhattanSum += Math.abs(goalPosition.getColumn() - col);
-            }
-        }
-
-        return manhattanSum;
     }
 
     private boolean isGoalReached(Node node) {
@@ -189,13 +161,12 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.up, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
+            return new Node(childBoard, node, Directions.up, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
         }
     }
-
 
     // move zero position up
     private Node moveTileDown(Node node) {
@@ -220,12 +191,11 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.down, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
+            return new Node(childBoard, node, Directions.down, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
         }
-
     }
 
     // move zero position right
@@ -251,12 +221,11 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.left, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
+            return new Node(childBoard, node, Directions.left, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
         }
-
     }
 
     // move zero position left
@@ -282,12 +251,11 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.right, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
+            return new Node(childBoard, node, Directions.right, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
         }
-
     }
 
     private int[][] makeCopyState(int[][] current) {
@@ -300,24 +268,6 @@ public class IDAStar {
         }
 
         return copyState;
-    }
-
-    private Position getZeroPosition(Node node) {
-        Position position = new Position();
-
-        int[][] current = node.getState();
-
-        for (int row = 0; row < boardSize; ++row) {
-            for (int col = 0; col < boardSize; ++col) {
-                if (current[row][col] == 0) {
-                    position.setRow(row);
-                    position.setColumn(col);
-                    break;
-                }
-            }
-        }
-
-        return position;
     }
 
     private Position findEmptyPosition(int[][] board) {
@@ -335,4 +285,26 @@ public class IDAStar {
 
         return position;
     }
+
+    private int manhattanSum(int[][] state) {
+        int manhattanSum = 0;
+
+        for (int row = 0; row < state.length; ++row) {
+            for (int col = 0; col < state.length; ++col) {
+                int tile = state[row][col];
+
+                if (tile == Main.EMPTY_TILE) {
+                    continue;
+                }
+
+                Position goalPosition = goalStatePositions.get(tile);
+
+                manhattanSum += Math.abs(goalPosition.getRow() - row);
+                manhattanSum += Math.abs(goalPosition.getColumn() - col);
+            }
+        }
+
+        return manhattanSum;
+    }
+
 }

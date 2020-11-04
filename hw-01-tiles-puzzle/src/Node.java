@@ -10,34 +10,16 @@ public class Node {
     private int totalCostF;
     private Position empty;
 
-    public Node(int[][] state, Node parent, String direction, int stepsFromStartG, int totalCostF, int manhattanH, Position empty) {
-        setState(state);
-        setParent(parent);
-        setDirection(direction);
-        setStepsFromStartG(stepsFromStartG);
-        setTotalCostF(totalCostF);
-        this.manhattanH = manhattanH;
-        this.empty = empty;
-    }
-
-    public void setState(int[][] state) {
+    public Node(int[][] state, Node parent, String direction, int stepsFromStartG, int manhattanH, Position empty) {
         this.state = state;
-    }
-
-    public void setParent(Node parent) {
         this.parent = parent;
-    }
-
-    public void setTotalCostF(int totalCostF) {
-        this.totalCostF = totalCostF;
-    }
-
-    public void setDirection(String direction) {
         this.direction = direction;
-    }
 
-    public void setStepsFromStartG(int stepsFromStartG) {
         this.stepsFromStartG = stepsFromStartG;
+        this.manhattanH = manhattanH;
+
+        this.totalCostF = stepsFromStartG + manhattanH;
+        this.empty = empty;
     }
 
     public int[][] getState() {
