@@ -177,8 +177,17 @@ public class IDAStar {
             childBoard[row][col] = childBoard[row + 1][col];
             childBoard[row + 1][col] = 0;
 
-            int childManh = manhattanSum(childBoard);
             Position emptyInChild = new Position(row + 1, col);
+
+            int movedTile = childBoard[row][col];
+            Position goalPos = goalStatePositions.get(movedTile);
+            Position currPos = new Position(row, col);
+            Position prevPos = new Position(row + 1, col);
+
+            int prevMahn = Math.abs(goalPos.getRow() - prevPos.getRow()) + Math.abs(goalPos.getColumn() - prevPos.getColumn());
+            int currManh = Math.abs(goalPos.getRow() - currPos.getRow()) + Math.abs(goalPos.getColumn() - currPos.getColumn());
+
+            int childManh = node.getManhattanH() - prevMahn + currManh;
 
             return new Node(childBoard, node, Directions.up, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
         }
@@ -199,8 +208,17 @@ public class IDAStar {
             childBoard[row][col] = childBoard[row - 1][col];
             childBoard[row - 1][col] = 0;
 
-            int childManh = manhattanSum(childBoard);
             Position emptyInChild = new Position(row - 1, col);
+
+            int movedTile = childBoard[row][col];
+            Position goalPos = goalStatePositions.get(movedTile);
+            Position currPos = new Position(row, col);
+            Position prevPos = new Position(row - 1, col);
+
+            int prevMahn = Math.abs(goalPos.getRow() - prevPos.getRow()) + Math.abs(goalPos.getColumn() - prevPos.getColumn());
+            int currManh = Math.abs(goalPos.getRow() - currPos.getRow()) + Math.abs(goalPos.getColumn() - currPos.getColumn());
+
+            int childManh = node.getManhattanH() - prevMahn + currManh;
 
             return new Node(childBoard, node, Directions.down, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
         }
@@ -221,8 +239,17 @@ public class IDAStar {
             childBoard[row][col] = childBoard[row][col + 1];
             childBoard[row][col + 1] = 0;
 
-            int childManh = manhattanSum(childBoard);
             Position emptyInChild = new Position(row, col + 1);
+
+            int movedTile = childBoard[row][col];
+            Position goalPos = goalStatePositions.get(movedTile);
+            Position currPos = new Position(row, col);
+            Position prevPos = new Position(row, col + 1);
+
+            int prevMahn = Math.abs(goalPos.getRow() - prevPos.getRow()) + Math.abs(goalPos.getColumn() - prevPos.getColumn());
+            int currManh = Math.abs(goalPos.getRow() - currPos.getRow()) + Math.abs(goalPos.getColumn() - currPos.getColumn());
+
+            int childManh = node.getManhattanH() - prevMahn + currManh;
 
             return new Node(childBoard, node, Directions.left, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
         }
@@ -243,8 +270,17 @@ public class IDAStar {
             childBoard[row][col] = childBoard[row][col - 1];
             childBoard[row][col - 1] = 0;
 
-            int childManh = manhattanSum(childBoard);
             Position emptyInChild = new Position(row, col - 1);
+
+            int movedTile = childBoard[row][col];
+            Position goalPos = goalStatePositions.get(movedTile);
+            Position currPos = new Position(row, col);
+            Position prevPos = new Position(row, col - 1);
+
+            int prevMahn = Math.abs(goalPos.getRow() - prevPos.getRow()) + Math.abs(goalPos.getColumn() - prevPos.getColumn());
+            int currManh = Math.abs(goalPos.getRow() - currPos.getRow()) + Math.abs(goalPos.getColumn() - currPos.getColumn());
+
+            int childManh = node.getManhattanH() - prevMahn + currManh;
 
             return new Node(childBoard, node, Directions.right, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
         }
