@@ -28,8 +28,11 @@ public class IDAStar {
             }
         }
 
-        this.initialNode = new Node(initialState, null, "", 0, manhattanSum(initialState));
-        this.finalNode = new Node(goalState, null, "", -1, -1);
+        int initialManh = manhattanSum(initialState);
+        Position initialEmpty = findEmptyPosition(initialState);
+
+        this.initialNode = new Node(initialState, null, "", 0, initialManh, initialManh, initialEmpty);
+        this.finalNode = new Node(goalState, null, "", -1, -1, -1, new Position(-1, -1));
     }
 
     public String getMoves() {
@@ -155,28 +158,29 @@ public class IDAStar {
     }
 
     private Node[] getChildNodes(Node node) {
-        Position empty = getZeroPosition(node);
-
-        Node up = moveTileUp(empty, node);
-        Node down = moveTileDown(empty, node);
-        Node left = moveTileLeft(empty, node);
-        Node right = moveTileRight(empty, node);
+        Node up = moveTileUp(node);
+        Node down = moveTileDown(node);
+        Node left = moveTileLeft(node);
+        Node right = moveTileRight(node);
 
         return new Node[]{up, right, left, down};
     }
 
     // move zero position down
-    private Node moveTileUp(Position empty, Node node) {
-        int row = empty.getRow();
-        int col = empty.getColumn();
+    private Node moveTileUp(Node node) {
+        int row = node.getEmpty().getRow();
+        int col = node.getEmpty().getColumn();
 
-        if (empty.getRow() < boardSize - 1) {
+        if (row < boardSize - 1) {
             int[][] childBoard = makeCopyState(node.getState());
 
             childBoard[row][col] = childBoard[row + 1][col];
-            childBoard[row + 1][col] = Main.EMPTY_TILE;
+            childBoard[row + 1][col] = 0;
 
-            return new Node(childBoard, node, Directions.up, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
+            int childManh = manhattanSum(childBoard);
+            Position emptyInChild = new Position(row + 1, col);
+
+            return new Node(childBoard, node, Directions.up, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
         }
         else {
             return null;
@@ -185,17 +189,20 @@ public class IDAStar {
 
 
     // move zero position up
-    private Node moveTileDown(Position empty, Node node) {
+    private Node moveTileDown(Node node) {
+        int row = node.getEmpty().getRow();
+        int col = node.getEmpty().getColumn();
 
-        int row = empty.getRow();
-        int col = empty.getColumn();
-
-        if (empty.getRow() > 0) {
+        if (row > 0) {
             int[][] childBoard = makeCopyState(node.getState());
 
             childBoard[row][col] = childBoard[row - 1][col];
-            childBoard[row - 1][col] = Main.EMPTY_TILE;
-            return new Node(childBoard, node, Directions.down, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
+            childBoard[row - 1][col] = 0;
+
+            int childManh = manhattanSum(childBoard);
+            Position emptyInChild = new Position(row - 1, col);
+
+            return new Node(childBoard, node, Directions.down, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
         }
         else {
             return null;
@@ -204,17 +211,20 @@ public class IDAStar {
     }
 
     // move zero position right
-    private Node moveTileLeft(Position empty, Node node) {
-
-        int row = empty.getRow();
-        int col = empty.getColumn();
+    private Node moveTileLeft(Node node) {
+        int row = node.getEmpty().getRow();
+        int col = node.getEmpty().getColumn();
 
         if (col < boardSize - 1) {
             int[][] childBoard = makeCopyState(node.getState());
 
             childBoard[row][col] = childBoard[row][col + 1];
             childBoard[row][col + 1] = 0;
-            return new Node(childBoard, node, Directions.left, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
+
+            int childManh = manhattanSum(childBoard);
+            Position emptyInChild = new Position(row, col + 1);
+
+            return new Node(childBoard, node, Directions.left, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
         }
         else {
             return null;
@@ -223,16 +233,20 @@ public class IDAStar {
     }
 
     // move zero position left
-    private Node moveTileRight(Position empty, Node node) {
-        int row = empty.getRow();
-        int col = empty.getColumn();
+    private Node moveTileRight(Node node) {
+        int row = node.getEmpty().getRow();
+        int col = node.getEmpty().getColumn();
 
         if (col > 0) {
             int[][] childBoard = makeCopyState(node.getState());
 
             childBoard[row][col] = childBoard[row][col - 1];
             childBoard[row][col - 1] = 0;
-            return new Node(childBoard, node, Directions.right, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + manhattanSum(childBoard));
+
+            int childManh = manhattanSum(childBoard);
+            Position emptyInChild = new Position(row, col - 1);
+
+            return new Node(childBoard, node, Directions.right, node.getStepsFromStartG() + 1, node.getStepsFromStartG() + 1 + childManh, childManh, emptyInChild);
         }
         else {
             return null;
@@ -260,6 +274,22 @@ public class IDAStar {
         for (int row = 0; row < boardSize; ++row) {
             for (int col = 0; col < boardSize; ++col) {
                 if (current[row][col] == 0) {
+                    position.setRow(row);
+                    position.setColumn(col);
+                    break;
+                }
+            }
+        }
+
+        return position;
+    }
+
+    private Position findEmptyPosition(int[][] board) {
+        Position position = new Position();
+
+        for (int row = 0; row < board.length; ++row) {
+            for (int col = 0; col < board.length; ++col) {
+                if (board[row][col] == 0) {
                     position.setRow(row);
                     position.setColumn(col);
                     break;

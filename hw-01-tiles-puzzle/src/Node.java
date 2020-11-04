@@ -4,16 +4,20 @@ import java.util.Comparator;
 public class Node {
     private int[][] state;
     private Node parent;
-    private int totalCostF;
     private String direction;
     private int stepsFromStartG; // the path cost of reaching this node so far node
+    private int manhattanH;
+    private int totalCostF;
+    private Position empty;
 
-    public Node(int[][] state, Node parent, String direction, int stepsFromStartG, int totalCostF) {
+    public Node(int[][] state, Node parent, String direction, int stepsFromStartG, int totalCostF, int manhattanH, Position empty) {
         setState(state);
         setParent(parent);
         setDirection(direction);
         setStepsFromStartG(stepsFromStartG);
         setTotalCostF(totalCostF);
+        this.manhattanH = manhattanH;
+        this.empty = empty;
     }
 
     public void setState(int[][] state) {
@@ -56,6 +60,14 @@ public class Node {
         return stepsFromStartG;
     }
 
+    public int getManhattanH() {
+        return manhattanH;
+    }
+
+    public Position getEmpty() {
+        return empty;
+    }
+
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(state);
@@ -84,6 +96,5 @@ public class Node {
         }
 
     }
-
 
 }

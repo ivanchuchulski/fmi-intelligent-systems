@@ -16,19 +16,11 @@ public class Main {
         try {
             checkIsBoardSolvable(initialState);
 
-//            solveWithAStar(initialState, goalState);
             solveWithIDAStar(initialState, goalState);
         }
         catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
-    }
-
-    private static void solveWithAStar(int[][] initialState, int[][] goalState) {
-        AStar aStarSearch = new AStar(initialState, goalState);
-
-        aStarSearch.findSolution();
-        aStarSearch.printResult();
     }
 
     private static void solveWithIDAStar(int[][] initialState, int[][] goalState) {
