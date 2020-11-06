@@ -406,7 +406,7 @@ class IDAStarTest {
     @Disabled
     public void test_4x4_15() {
         int[][] initialState = buildBoardFromArray(new int[]{0, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1});
-        int[][] goalState = generateDefualtGoalState(initialState);
+        int[][] goalState = generateDefualtGoalState(initialState); 
 
         final int steps = 78;
 

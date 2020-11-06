@@ -13,6 +13,9 @@ public class IDAStar {
 
     final int FOUND = 0;
 
+    int[][] workState;
+    Directions[] directions = {Directions.UP, Directions.RIGHT, Directions.LEFT, Directions.DOWN};
+
     public IDAStar(int[][] initialState, int[][] goalState) {
         this.boardSize = initialState.length;
         goalStatePositions = new HashMap<>();
@@ -31,6 +34,8 @@ public class IDAStar {
 
         this.initialNode = new Node(initialState, null, Directions.NONE, 0, initialManh, initialEmpty);
         this.finalNode = new Node(goalState, null, Directions.NONE, -1, -1, new Position(-1, -1));
+
+        workState = makeCopyState(initialState);
     }
 
     public String getMoves() {
@@ -49,7 +54,7 @@ public class IDAStar {
     }
 
     public void findSolution() {
-        int currentLimit = manhattanSum(initialNode.getState());
+        int currentLimit = initialNode.getManhattanH();
 
         while (true) {
             int smallestLimitOverCurrent = recursiveSearch(initialNode, 0, currentLimit);
@@ -81,13 +86,32 @@ public class IDAStar {
 
         int minF = Integer.MAX_VALUE;
 
-        for (Node child : getChildNodes(node)) {
+        for (Directions direction : directions) {
+            Node child = goDirection(direction, node);
+
             if (child == null) {
                 continue;
             }
 
-            if (node.getParent() != null && node.getParent().equals(child)) {
-                continue;
+            if (node.getParent() != null) {
+                Directions parentDir = node.getDirection();
+                if (parentDir.equals(Directions.UP) && direction.equals(Directions.DOWN)) {
+                    undoDirection(direction, child);
+                    continue;
+                }
+                if (parentDir.equals(Directions.DOWN) && direction.equals(Directions.UP)) {
+                    undoDirection(direction, child);
+                    continue;
+                }
+                if (parentDir.equals(Directions.RIGHT) && direction.equals(Directions.LEFT)) {
+                    undoDirection(direction, child);
+                    continue;
+                }
+                if (parentDir.equals(Directions.LEFT) && direction.equals(Directions.RIGHT)) {
+                    undoDirection(direction, child);
+                    continue;
+                }
+
             }
 
             int temp = recursiveSearch(child, stepsToNodeG + 1, currentFLimit);
@@ -98,13 +122,62 @@ public class IDAStar {
             if (temp < minF) {
                 minF = temp;
             }
+
+            undoDirection(direction, child);
         }
 
         return minF;
     }
 
+    private void undoDirection(Directions direction, Node child) {
+        Position empty = child.getEmpty();
+        int row = empty.getRow();
+        int col = empty.getColumn();
+
+        switch (direction) {
+            case UP -> {
+                workState[row][col] = workState[row - 1][col];
+                workState[row - 1][col] = 0;
+            }
+            case DOWN -> {
+                workState[row][col] = workState[row + 1][col];
+                workState[row + 1][col] = 0;
+            }
+            case RIGHT -> {
+                workState[row][col] = workState[row][col + 1];
+                workState[row][col + 1] = 0;
+            }
+            case LEFT -> {
+                workState[row][col] = workState[row][col - 1];
+                workState[row][col - 1] = 0;
+            }
+        }
+    }
+
+    private Node goDirection(Directions direction, Node node) {
+        Node result = null;
+
+        switch (direction) {
+            case UP -> {
+                result = moveTileUp(node);
+            }
+            case DOWN -> {
+                result = moveTileDown(node);
+            }
+            case RIGHT -> {
+                result = moveTileRight(node);
+            }
+            case LEFT -> {
+                result = moveTileLeft(node);
+            }
+        }
+        ;
+
+        return result;
+    }
+
     private boolean isGoalReached(Node node) {
-        int[][] current = node.getState();
+        int[][] current = workState;
         int[][] goal = finalNode.getState();
 
         for (int i = 0; i < boardSize; ++i) {
@@ -133,14 +206,12 @@ public class IDAStar {
         int col = node.getEmpty().getColumn();
 
         if (row < boardSize - 1) {
-            int[][] childBoard = makeCopyState(node.getState());
-
-            childBoard[row][col] = childBoard[row + 1][col];
-            childBoard[row + 1][col] = 0;
+            workState[row][col] = workState[row + 1][col];
+            workState[row + 1][col] = 0;
 
             Position emptyInChild = new Position(row + 1, col);
 
-            int movedTile = childBoard[row][col];
+            int movedTile = workState[row][col];
             Position goalPos = goalStatePositions.get(movedTile);
             Position currPos = new Position(row, col);
             Position prevPos = new Position(row + 1, col);
@@ -150,7 +221,7 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.UP, node.getStepsFromStartG() + 1, childManh, emptyInChild);
+            return new Node(null, node, Directions.UP, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
@@ -163,14 +234,12 @@ public class IDAStar {
         int col = node.getEmpty().getColumn();
 
         if (row > 0) {
-            int[][] childBoard = makeCopyState(node.getState());
-
-            childBoard[row][col] = childBoard[row - 1][col];
-            childBoard[row - 1][col] = 0;
+            workState[row][col] = workState[row - 1][col];
+            workState[row - 1][col] = 0;
 
             Position emptyInChild = new Position(row - 1, col);
 
-            int movedTile = childBoard[row][col];
+            int movedTile = workState[row][col];
             Position goalPos = goalStatePositions.get(movedTile);
             Position currPos = new Position(row, col);
             Position prevPos = new Position(row - 1, col);
@@ -180,7 +249,7 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.DOWN, node.getStepsFromStartG() + 1, childManh, emptyInChild);
+            return new Node(null, node, Directions.DOWN, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
@@ -193,14 +262,12 @@ public class IDAStar {
         int col = node.getEmpty().getColumn();
 
         if (col < boardSize - 1) {
-            int[][] childBoard = makeCopyState(node.getState());
-
-            childBoard[row][col] = childBoard[row][col + 1];
-            childBoard[row][col + 1] = 0;
+            workState[row][col] = workState[row][col + 1];
+            workState[row][col + 1] = 0;
 
             Position emptyInChild = new Position(row, col + 1);
 
-            int movedTile = childBoard[row][col];
+            int movedTile = workState[row][col];
             Position goalPos = goalStatePositions.get(movedTile);
             Position currPos = new Position(row, col);
             Position prevPos = new Position(row, col + 1);
@@ -210,7 +277,7 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.LEFT, node.getStepsFromStartG() + 1, childManh, emptyInChild);
+            return new Node(null, node, Directions.LEFT, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
@@ -223,14 +290,12 @@ public class IDAStar {
         int col = node.getEmpty().getColumn();
 
         if (col > 0) {
-            int[][] childBoard = makeCopyState(node.getState());
-
-            childBoard[row][col] = childBoard[row][col - 1];
-            childBoard[row][col - 1] = 0;
+            workState[row][col] = workState[row][col - 1];
+            workState[row][col - 1] = 0;
 
             Position emptyInChild = new Position(row, col - 1);
 
-            int movedTile = childBoard[row][col];
+            int movedTile = workState[row][col];
             Position goalPos = goalStatePositions.get(movedTile);
             Position currPos = new Position(row, col);
             Position prevPos = new Position(row, col - 1);
@@ -240,7 +305,7 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.RIGHT, node.getStepsFromStartG() + 1, childManh, emptyInChild);
+            return new Node(null, node, Directions.RIGHT, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
