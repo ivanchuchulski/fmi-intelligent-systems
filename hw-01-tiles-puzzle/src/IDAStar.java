@@ -90,30 +90,14 @@ public class IDAStar {
         int minF = Integer.MAX_VALUE;
 
         for (Directions direction : DIRECTIONS) {
+            if (checkIfTransitionWillGoToGrandparent(node, direction)) {
+                continue;
+            }
+
             Node child = goDirection(direction, node);
 
             if (child == null) {
                 continue;
-            }
-
-            if (node.getParent() != null) {
-                Directions parentDir = node.getDirection();
-                if (parentDir.equals(Directions.UP) && direction.equals(Directions.DOWN)) {
-                    undoDirection(direction, child);
-                    continue;
-                }
-                if (parentDir.equals(Directions.DOWN) && direction.equals(Directions.UP)) {
-                    undoDirection(direction, child);
-                    continue;
-                }
-                if (parentDir.equals(Directions.RIGHT) && direction.equals(Directions.LEFT)) {
-                    undoDirection(direction, child);
-                    continue;
-                }
-                if (parentDir.equals(Directions.LEFT) && direction.equals(Directions.RIGHT)) {
-                    undoDirection(direction, child);
-                    continue;
-                }
             }
 
             int temp = recursiveSearch(child, stepsToNodeG + 1, currentFLimit);
@@ -129,6 +113,25 @@ public class IDAStar {
         }
 
         return minF;
+    }
+
+    private boolean checkIfTransitionWillGoToGrandparent(Node node, Directions direction) {
+        if (node.getParent() != null) {
+            Directions parentDir = node.getDirection();
+            if (parentDir.equals(Directions.UP) && direction.equals(Directions.DOWN)) {
+                return true;
+            }
+            if (parentDir.equals(Directions.DOWN) && direction.equals(Directions.UP)) {
+                return true;
+            }
+            if (parentDir.equals(Directions.RIGHT) && direction.equals(Directions.LEFT)) {
+                return true;
+            }
+            if (parentDir.equals(Directions.LEFT) && direction.equals(Directions.RIGHT)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Node goDirection(Directions direction, Node parent) {

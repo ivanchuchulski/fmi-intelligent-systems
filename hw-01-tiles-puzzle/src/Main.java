@@ -6,15 +6,19 @@ public class Main {
     public static int emptyTileIndexInSolution = -1;
 
     public static void main(String[] args) {
-        int[][] initialState = inputBoard();
-        int[][] goalState = generateGoalState(initialState);
-
-        printBoard(initialState);
-        printBoard(goalState);
-
         try {
+            int[][] initialState = inputBoard();
+            int[][] goalState = generateGoalState(initialState);
+
+            System.out.println("printing initial state");
+            printBoard(initialState);
+
             checkIsBoardSolvable(initialState);
 
+            System.out.println("printing goal state");
+            printBoard(goalState);
+
+            System.out.println("solving...");
             solveWithIDAStar(initialState, goalState);
         }
         catch (Exception exception) {
@@ -132,8 +136,6 @@ public class Main {
     }
 
     public static void printBoard(int[][] board) {
-        System.out.println("printing board : ");
-
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 System.out.print(board[i][j] + " ");

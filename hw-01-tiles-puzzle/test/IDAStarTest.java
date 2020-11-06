@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class IDAStarTest {
@@ -357,7 +359,7 @@ class IDAStarTest {
 
     @Test
     public void test_4x4_12() {
-        int[][] initialState = buildBoardFromArray(new int[]{6, 8, 4, 12, 7, 15, 10, 14, 0, 3, 2, 11, 1, 5, 9, 13 });
+        int[][] initialState = buildBoardFromArray(new int[]{6, 8, 4, 12, 7, 15, 10, 14, 0, 3, 2, 11, 1, 5, 9, 13});
         int[][] goalState = generateDefualtGoalState(initialState);
 
         final int steps = 46;
@@ -403,10 +405,10 @@ class IDAStarTest {
     @Test
     @Disabled
     public void test_4x4_15() {
-        int[][] initialState = buildBoardFromArray(new int[]{0, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1});
+        int[][] initialState = buildBoardFromArray(new int[]{14, 15, 8, 12, 10, 11, 9, 13, 2, 6, 5, 1, 3, 7, 4, 0});
         int[][] goalState = generateDefualtGoalState(initialState);
 
-        final int steps = 78;
+        final int steps = 66;
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
