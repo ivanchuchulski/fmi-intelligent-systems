@@ -30,7 +30,7 @@ public class Main {
         IDAStar idaStar = new IDAStar(initialState, goalState);
 
         idaStar.findSolution();
-        idaStar.printInfo();
+        idaStar.printSolutionInformation();
     }
 
     private static void checkIsBoardSolvable(int[][] initialState) throws Exception {

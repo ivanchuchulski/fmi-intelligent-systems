@@ -393,13 +393,13 @@ class IDAStarTest {
         int[][] goalState = generateDefualtGoalState(initialState);
 
         final int steps = 50;
-        final String moves = "LDRRUULDLDRRRULULLDDRRRUULDDDLLURDRRULLURRDLUULDLU";
+        final String moves = "LDRRUURDLLLDRRRUULDRULLLDDRRDLLURDRRULLURRDLUULDLU";
 
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
         assertEquals(steps, idaStar.getNumberOfStepsToSolution());
-        // assertEquals(moves, idaStar.getMoves());
+         assertEquals(moves, idaStar.getMoves());
     }
 
     @Test

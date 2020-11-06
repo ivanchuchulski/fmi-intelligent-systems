@@ -1,5 +1,6 @@
 [1] https://algorithmsinsight.wordpress.com/graph-theory-2/ida-star-algorithm-in-general/
 [2] https://www.andrew.cmu.edu/course/15-121/labs/HW-7%20Slide%20Puzzle/lab.html
-[3] https://www.researchgate.net/publication/286223862_Implementing_fast_heuristic_search_code
+[3] https://www.cs.princeton.edu/courses/archive/spring18/cos226/assignments/8puzzle/index.html
+[4] https://www.researchgate.net/publication/286223862_Implementing_fast_heuristic_search_code
 
 Тестовете за 3х3 са взети от [2], а тестовете за 4х4 и 5х5 са от колегата Даниел Пенчев.

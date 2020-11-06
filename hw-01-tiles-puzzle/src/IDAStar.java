@@ -1,6 +1,8 @@
 import java.util.*;
 
 public class IDAStar {
+    final int FOUND = 0;
+
     private final Node initialNode;
     private Node finalNode;
 
@@ -8,37 +10,22 @@ public class IDAStar {
 
     private int numberOfStepsToSolution;
     private String solutionMoves;
-
+    private final StringBuilder movesBuilder;
     private final Map<Integer, Position> goalStatePositions;
 
-    final int FOUND = 0;
-
     int[][] workState;
-    int[][] goalState;
-    Directions[] DIRECTIONS = {Directions.UP, Directions.RIGHT, Directions.LEFT, Directions.DOWN};
+    final int[][] goalState;
+    final Directions[] DIRECTIONS = {Directions.UP, Directions.RIGHT, Directions.LEFT, Directions.DOWN};
 
     public IDAStar(int[][] initialState, int[][] goalState) {
         this.boardSize = initialState.length;
-        goalStatePositions = new HashMap<>();
+        this.goalStatePositions = new HashMap<>();
+        precomputeGoalStatePositions(goalState);
 
-        for (int row = 0; row < boardSize; row++) {
-            for (int col = 0; col < boardSize; col++) {
-                if (goalState[row][col] == Main.EMPTY_TILE) {
-                    continue;
-                }
-                goalStatePositions.put(goalState[row][col], new Position(row, col));
-            }
-        }
-
-        int initialManh = manhattanSum(initialState);
-        Position initialEmpty = findEmptyPosition(initialState);
-
-        this.initialNode = new Node(null, Directions.NONE, 0, initialManh, initialEmpty);
-        // this.finalNode = new Node(goalState, null, Directions.NONE, -1, -1, new Position(-1, -1));
-
+        this.initialNode = new Node(null, Directions.NONE, 0, manhattanSum(initialState), findEmptyPosition(initialState));
+        this.workState = initialState;
         this.goalState = goalState;
-
-        workState = makeCopyState(initialState);
+        this.movesBuilder = new StringBuilder();
     }
 
     public String getMoves() {
@@ -49,9 +36,7 @@ public class IDAStar {
         return numberOfStepsToSolution;
     }
 
-    public void printInfo() {
-        String moves = getMoves();
-
+    public void printSolutionInformation() {
         System.out.println("#steps : " + getNumberOfStepsToSolution());
         System.out.println("moves : " + getMoves());
     }
@@ -60,7 +45,7 @@ public class IDAStar {
         int currentLimit = initialNode.getManhattanH();
 
         while (true) {
-            int smallestLimitOverCurrent = recursiveSearch(initialNode, 0, currentLimit);
+            int smallestLimitOverCurrent = recursiveSearch(initialNode, currentLimit);
 
             if (smallestLimitOverCurrent == FOUND) {
                 break;
@@ -72,18 +57,17 @@ public class IDAStar {
             currentLimit = smallestLimitOverCurrent;
         }
 
-        numberOfStepsToSolution = finalNode.getStepsFromStartG();
-
-        buildSolutionMoves();
+        solutionMoves = movesBuilder.reverse().toString();
+        numberOfStepsToSolution = solutionMoves.length();
     }
 
-    private int recursiveSearch(Node node, int stepsToNodeG, int currentFLimit) {
+    private int recursiveSearch(Node node, int currentFLimit) {
         if (node.getTotalCostF() > currentFLimit) {
             return node.getTotalCostF();
         }
 
         if (isGoalReached()) {
-            finalNode = node;
+//            finalNode = node;
             return FOUND;
         }
 
@@ -94,15 +78,16 @@ public class IDAStar {
                 continue;
             }
 
-            Node child = goDirection(direction, node);
+            Node child = goToDirection(direction, node);
 
             if (child == null) {
                 continue;
             }
 
-            int temp = recursiveSearch(child, stepsToNodeG + 1, currentFLimit);
+            int temp = recursiveSearch(child, currentFLimit);
 
             if (temp == FOUND) {
+                movesBuilder.append(direction.getLetter());
                 return FOUND;
             }
             if (temp < minF) {
@@ -115,26 +100,27 @@ public class IDAStar {
         return minF;
     }
 
-    private boolean checkIfTransitionWillGoToGrandparent(Node node, Directions direction) {
-        if (node.getParent() != null) {
-            Directions parentDir = node.getDirection();
-            if (parentDir.equals(Directions.UP) && direction.equals(Directions.DOWN)) {
+    private boolean checkIfTransitionWillGoToGrandparent(Node parent, Directions directionToGo) {
+        if (parent.getParent() != null) {
+            Directions parentDirection = parent.getDirection();
+
+            if (parentDirection.equals(Directions.UP) && directionToGo.equals(Directions.DOWN)) {
                 return true;
             }
-            if (parentDir.equals(Directions.DOWN) && direction.equals(Directions.UP)) {
+            if (parentDirection.equals(Directions.DOWN) && directionToGo.equals(Directions.UP)) {
                 return true;
             }
-            if (parentDir.equals(Directions.RIGHT) && direction.equals(Directions.LEFT)) {
+            if (parentDirection.equals(Directions.RIGHT) && directionToGo.equals(Directions.LEFT)) {
                 return true;
             }
-            if (parentDir.equals(Directions.LEFT) && direction.equals(Directions.RIGHT)) {
+            if (parentDirection.equals(Directions.LEFT) && directionToGo.equals(Directions.RIGHT)) {
                 return true;
             }
         }
         return false;
     }
 
-    private Node goDirection(Directions direction, Node parent) {
+    private Node goToDirection(Directions direction, Node parent) {
         Node result = null;
 
         switch (direction) {
@@ -264,6 +250,17 @@ public class IDAStar {
         }
 
         return copyState;
+    }
+
+    private void precomputeGoalStatePositions(int[][] goalState) {
+        for (int row = 0; row < boardSize; row++) {
+            for (int col = 0; col < boardSize; col++) {
+                if (goalState[row][col] == Main.EMPTY_TILE) {
+                    continue;
+                }
+                goalStatePositions.put(goalState[row][col], new Position(row, col));
+            }
+        }
     }
 
     private Position findEmptyPosition(int[][] board) {
