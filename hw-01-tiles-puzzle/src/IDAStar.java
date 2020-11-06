@@ -6,7 +6,7 @@ public class IDAStar {
 
     private final int boardSize;
 
-    private int solutionSteps;
+    private int numberOfStepsToSolution;
     private String solutionMoves;
 
     private final Map<Integer, Position> goalStatePositions;
@@ -29,26 +29,23 @@ public class IDAStar {
         int initialManh = manhattanSum(initialState);
         Position initialEmpty = findEmptyPosition(initialState);
 
-        this.initialNode = new Node(initialState, null, "", 0, initialManh, initialEmpty);
-        this.finalNode = new Node(goalState, null, "", -1, -1, new Position(-1, -1));
+        this.initialNode = new Node(initialState, null, Directions.NONE, 0, initialManh, initialEmpty);
+        this.finalNode = new Node(goalState, null, Directions.NONE, -1, -1, new Position(-1, -1));
     }
 
     public String getMoves() {
         return solutionMoves;
     }
 
-    public int getSteps() {
-        return solutionSteps;
+    public int getNumberOfStepsToSolution() {
+        return numberOfStepsToSolution;
     }
 
     public void printInfo() {
         String moves = getMoves();
 
-        System.out.println("#steps : " + getSteps());
+        System.out.println("#steps : " + getNumberOfStepsToSolution());
         System.out.println("moves : " + getMoves());
-
-        long aftermem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        System.out.println("\nMemory used: " + (aftermem / 1024) + "kb");
     }
 
     public void findSolution() {
@@ -67,17 +64,9 @@ public class IDAStar {
             currentLimit = smallestLimitOverCurrent;
         }
 
-        solutionSteps = finalNode.getStepsFromStartG();
+        numberOfStepsToSolution = finalNode.getStepsFromStartG();
 
-        StringBuilder stringBuilder = new StringBuilder();
-
-        do {
-            stringBuilder.append(finalNode.getDirection());
-            finalNode = finalNode.getParent();
-        }
-        while (finalNode != null);
-
-        solutionMoves = stringBuilder.reverse().toString();
+        buildSolutionMoves();
     }
 
     private int recursiveSearch(Node node, int stepsToNodeG, int currentFLimit) {
@@ -161,7 +150,7 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.up, node.getStepsFromStartG() + 1, childManh, emptyInChild);
+            return new Node(childBoard, node, Directions.UP, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
@@ -191,7 +180,7 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.down, node.getStepsFromStartG() + 1, childManh, emptyInChild);
+            return new Node(childBoard, node, Directions.DOWN, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
@@ -221,7 +210,7 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.left, node.getStepsFromStartG() + 1, childManh, emptyInChild);
+            return new Node(childBoard, node, Directions.LEFT, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
@@ -251,7 +240,7 @@ public class IDAStar {
 
             int childManh = node.getManhattanH() - prevMahn + currManh;
 
-            return new Node(childBoard, node, Directions.right, node.getStepsFromStartG() + 1, childManh, emptyInChild);
+            return new Node(childBoard, node, Directions.RIGHT, node.getStepsFromStartG() + 1, childManh, emptyInChild);
         }
         else {
             return null;
@@ -305,6 +294,19 @@ public class IDAStar {
         }
 
         return manhattanSum;
+    }
+
+    private void buildSolutionMoves() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        do {
+            stringBuilder.append(finalNode.getDirection().getLetter());
+
+            finalNode = finalNode.getParent();
+        }
+        while (finalNode != null);
+
+        solutionMoves = stringBuilder.reverse().toString();
     }
 
 }

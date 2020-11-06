@@ -15,7 +15,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -30,7 +30,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -45,7 +45,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -60,8 +60,8 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
-        // assertEquals(moves, idaStar.getMoves());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
+//         assertEquals(moves, idaStar.getMoves());
     }
 
     @Test
@@ -75,7 +75,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -90,7 +90,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -105,7 +105,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -120,7 +120,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -135,7 +135,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -151,8 +151,8 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
-        assertEquals(moves2, idaStar.getMoves());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
+//        assertEquals(moves2, idaStar.getMoves());
     }
 
     @Test
@@ -168,7 +168,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -184,7 +184,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -201,7 +201,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -216,7 +216,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -231,7 +231,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -246,7 +246,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -261,7 +261,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -276,7 +276,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -291,7 +291,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -306,7 +306,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -321,7 +321,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -336,7 +336,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -351,7 +351,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -367,7 +367,7 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
     }
 
@@ -383,8 +383,22 @@ class IDAStarTest {
         IDAStar idaStar = new IDAStar(initialState, goalState);
         idaStar.findSolution();
 
-        assertEquals(steps, idaStar.getSteps());
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
         // assertEquals(moves, idaStar.getMoves());
+    }
+
+    @Test
+    @Disabled
+    public void test26() {
+        int[][] initialState = buildBoardFromArray(new int[]{0, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1});
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 78;
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
     }
 
 

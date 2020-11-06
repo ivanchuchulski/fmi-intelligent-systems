@@ -4,13 +4,13 @@ import java.util.Comparator;
 public class Node {
     private int[][] state;
     private Node parent;
-    private String direction;
+    private Directions direction;
     private int stepsFromStartG; // the path cost of reaching this node so far node
     private int manhattanH;
     private int totalCostF;
     private Position empty;
 
-    public Node(int[][] state, Node parent, String direction, int stepsFromStartG, int manhattanH, Position empty) {
+    public Node(int[][] state, Node parent, Directions direction, int stepsFromStartG, int manhattanH, Position empty) {
         this.state = state;
         this.parent = parent;
         this.direction = direction;
@@ -34,7 +34,7 @@ public class Node {
         return totalCostF;
     }
 
-    public String getDirection() {
+    public Directions getDirection() {
         return direction;
     }
 
