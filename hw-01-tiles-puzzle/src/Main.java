@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -75,7 +76,7 @@ public class Main {
         int[][] board;
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("enter number of tiles (e.g. 8 for 3x3, 15 for 4x4, etc) : ");
+        System.out.print("enter number of tiles (e.g. 8 for 3x3, 15 for 4x4, 25 for 5x5, etc) : ");
         int numberOfTiles = scanner.nextInt();
 
         System.out.print("enter index of empty element in the solution [0, #tiles - 1] or -1 for the lowest right : ");
@@ -90,7 +91,7 @@ public class Main {
         }
         else {
             if (emptyIndexInSolution < 0 || emptyIndexInSolution > numberOfTiles) {
-                throw new RuntimeException("error : wrong empty tile index, it must be within [0, " + numberOfTiles + "] but was " + emptyIndexInSolution);
+                throw new RuntimeException("error : wrong empty tile index, it must be within [0, " + numberOfTiles + " - 1] but was " + emptyIndexInSolution);
             }
             else {
                 Main.emptyTileIndexInSolution = emptyIndexInSolution;
@@ -115,11 +116,22 @@ public class Main {
 
         for (int i = 0; i < initialBoard.length; i++) {
             for (int j = 0; j < initialBoard.length; j++) {
-                if (i * initialBoard.length + j == Main.emptyTileIndexInSolution) {
-                    goalState[i][j] = EMPTY_TILE;
+                if (isEven(initialBoard.length)) {
+                    if (i * initialBoard.length + j == Main.emptyTileIndexInSolution) {
+                        goalState[i][j] = EMPTY_TILE;
+                    }
+                    else {
+                        goalState[i][j] = tilesNumber++;
+                    }
+
                 }
                 else {
-                    goalState[i][j] = tilesNumber++;
+                    if (i * initialBoard.length + j + 1 == Main.emptyTileIndexInSolution) {
+                        goalState[i][j] = EMPTY_TILE;
+                    }
+                    else {
+                        goalState[i][j] = tilesNumber++;
+                    }
                 }
             }
         }
