@@ -371,7 +371,6 @@ class IDAStarTest {
     }
 
     @Test
-    @Disabled
     public void test_4x4_13() {
         int[][] initialState = buildBoardFromArray(new int[]{13, 11, 9, 3, 14, 7, 1, 4, 0, 5, 10, 12, 15, 2, 6, 8});
         int[][] goalState = generateDefualtGoalState(initialState);
@@ -387,7 +386,6 @@ class IDAStarTest {
     }
 
     @Test
-    @Disabled
     public void test_4x4_14() {
         int[][] initialState = buildBoardFromArray(new int[]{2, 9, 3, 5, 8, 11, 12, 7, 15, 4, 0, 13, 6, 1, 10, 14});
         int[][] goalState = generateDefualtGoalState(initialState);
@@ -406,7 +404,7 @@ class IDAStarTest {
     @Disabled
     public void test_4x4_15() {
         int[][] initialState = buildBoardFromArray(new int[]{0, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1});
-        int[][] goalState = generateDefualtGoalState(initialState); 
+        int[][] goalState = generateDefualtGoalState(initialState);
 
         final int steps = 78;
 

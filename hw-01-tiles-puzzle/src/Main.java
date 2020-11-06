@@ -6,7 +6,6 @@ public class Main {
     public static int emptyTileIndexInSolution = -1;
 
     public static void main(String[] args) {
-        int emptyTileIndexInSolution;
         int[][] initialState = inputBoard();
         int[][] goalState = generateGoalState(initialState);
 
@@ -27,9 +26,7 @@ public class Main {
         IDAStar idaStar = new IDAStar(initialState, goalState);
 
         idaStar.findSolution();
-//        idaStar.getMoves();
         idaStar.printInfo();
-
     }
 
     private static void checkIsBoardSolvable(int[][] initialState) throws Exception {
