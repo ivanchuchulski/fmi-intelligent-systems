@@ -15,7 +15,7 @@ public class IDAStar {
 
     int[][] workState;
     final int[][] goalState;
-    final Directions[] DIRECTIONS = {Directions.UP, Directions.RIGHT, Directions.LEFT, Directions.DOWN};
+    final Directions[] DIRECTIONS = {Directions.UP, Directions.LEFT, Directions.RIGHT, Directions.DOWN};
 
     public IDAStar(int[][] initialState, int[][] goalState) {
         this.boardSize = initialState.length;
@@ -124,10 +124,18 @@ public class IDAStar {
         Node result = null;
 
         switch (direction) {
-            case UP -> result = moveTileUp(parent);
-            case DOWN -> result = moveTileDown(parent);
-            case RIGHT -> result = moveTileRight(parent);
-            case LEFT -> result = moveTileLeft(parent);
+            case UP:
+                result = moveTileUp(parent);
+                break;
+            case DOWN:
+                result = moveTileDown(parent);
+                break;
+            case RIGHT:
+                result = moveTileRight(parent);
+                break;
+            case LEFT:
+                result = moveTileLeft(parent);
+                break;
         }
 
         return result;
@@ -137,10 +145,18 @@ public class IDAStar {
         Position empty = child.getEmpty();
 
         switch (direction) {
-            case UP -> downTransition(empty);
-            case DOWN -> upTransition(empty);
-            case RIGHT -> leftTransition(empty);
-            case LEFT -> rightTransition(empty);
+            case UP:
+                downTransition(empty);
+                break;
+            case DOWN:
+                upTransition(empty);
+                break;
+            case RIGHT:
+                leftTransition(empty);
+                break;
+            case LEFT:
+                rightTransition(empty);
+                break;
         }
     }
 
