@@ -13,9 +13,11 @@ public class IDAStar {
     private final StringBuilder movesBuilder;
     private final Map<Integer, Position> goalStatePositions;
 
-    int[][] workState;
-    final int[][] goalState;
-    final Directions[] DIRECTIONS = {Directions.UP, Directions.LEFT, Directions.RIGHT, Directions.DOWN};
+    private final int[][] workState;
+    private final int[][] goalState;
+    private final Directions[] DIRECTIONS = {Directions.UP, Directions.LEFT, Directions.RIGHT, Directions.DOWN};
+
+    private final ArrayList<String> moves;
 
     public IDAStar(int[][] initialState, int[][] goalState) {
         this.boardSize = initialState.length;
@@ -26,10 +28,15 @@ public class IDAStar {
         this.workState = initialState;
         this.goalState = goalState;
         this.movesBuilder = new StringBuilder();
+        this.moves = new ArrayList<>();
     }
 
-    public String getMoves() {
+    public String getMovesAsLetters() {
         return solutionMoves;
+    }
+
+    public ArrayList<String> getMoves() {
+        return moves;
     }
 
     public int getNumberOfStepsToSolution() {
@@ -37,8 +44,11 @@ public class IDAStar {
     }
 
     public void printSolutionInformation() {
+        System.out.println("solution found : ");
+
         System.out.println("#steps : " + getNumberOfStepsToSolution());
-        System.out.println("moves : " + getMoves());
+        System.out.println("moves : " + getMoves().toString());
+//        System.out.println("moves : " + getMovesAsLetters());
     }
 
     public void findSolution() {
@@ -58,7 +68,6 @@ public class IDAStar {
         }
 
         solutionMoves = movesBuilder.reverse().toString();
-        numberOfStepsToSolution = solutionMoves.length();
     }
 
     private int recursiveSearch(Node node, int currentFLimit) {
@@ -67,7 +76,7 @@ public class IDAStar {
         }
 
         if (isGoalReached()) {
-//            finalNode = node;
+            numberOfStepsToSolution = node.getStepsFromStartG();
             return FOUND;
         }
 
@@ -87,7 +96,12 @@ public class IDAStar {
             int temp = recursiveSearch(child, currentFLimit);
 
             if (temp == FOUND) {
-                movesBuilder.append(direction.getLetter());
+                // task requirement
+                moves.add(direction.getFullDirectionText());
+
+                // for tests
+//                movesBuilder.append(direction.getLetter());
+
                 return FOUND;
             }
             if (temp < minF) {
@@ -359,7 +373,7 @@ public class IDAStar {
         StringBuilder stringBuilder = new StringBuilder();
 
         do {
-            stringBuilder.append(finalNode.getDirection().getLetter());
+            stringBuilder.append(finalNode.getDirection().getFullDirectionText());
 
             finalNode = finalNode.getParent();
         }

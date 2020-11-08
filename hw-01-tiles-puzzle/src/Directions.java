@@ -1,9 +1,9 @@
 public enum Directions {
     NONE(""),
-    UP("U"),
-    DOWN("D"),
-    RIGHT("R"),
-    LEFT("L");
+    UP("Up"),
+    DOWN("Down"),
+    RIGHT("Right"),
+    LEFT("Left");
 
     private final String letter;
 
@@ -11,7 +11,11 @@ public enum Directions {
         this.letter = letter;
     }
 
-    String getLetter() {
+    String getFullDirectionText() {
         return this.letter;
+    }
+
+    char getLetter() {
+        return this.letter.charAt(0);
     }
 }
