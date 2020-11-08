@@ -44,10 +44,15 @@ public class IDAStar {
     }
 
     public void printSolutionInformation() {
-        System.out.println("solution found : ");
+//        System.out.println("solution found : ");
+//        System.out.print("#steps : ");
+        System.out.println(getNumberOfStepsToSolution());
 
-        System.out.println("#steps : " + getNumberOfStepsToSolution());
-        System.out.println("moves : " + getMoves().toString());
+//        System.out.println("moves : ");
+        for (String move : moves) {
+            System.out.println(move);
+        }
+
 //        System.out.println("moves : " + getMovesAsLetters());
     }
 
@@ -68,6 +73,7 @@ public class IDAStar {
         }
 
         solutionMoves = movesBuilder.reverse().toString();
+        Collections.reverse(moves);
     }
 
     private int recursiveSearch(Node node, int currentFLimit) {
@@ -100,7 +106,7 @@ public class IDAStar {
                 moves.add(direction.getFullDirectionText());
 
                 // for tests
-//                movesBuilder.append(direction.getLetter());
+                movesBuilder.append(Character.toUpperCase(direction.getLetter()));
 
                 return FOUND;
             }

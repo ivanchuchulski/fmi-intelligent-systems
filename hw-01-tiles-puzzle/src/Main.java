@@ -11,15 +11,15 @@ public class Main {
             int[][] initialState = inputBoard();
             int[][] goalState = generateGoalState(initialState);
 
-            System.out.println("printing initial state");
-            printBoard(initialState);
+//            System.out.println("printing initial state");
+//            printBoard(initialState);
 
             checkIsBoardSolvable(initialState);
 
-            System.out.println("printing goal state");
-            printBoard(goalState);
+//            System.out.println("printing goal state");
+//            printBoard(goalState);
 
-            System.out.println("solving...");
+//            System.out.println("solving...");
             solveWithIDAStar(initialState, goalState);
         }
         catch (Exception exception) {
@@ -122,8 +122,6 @@ public class Main {
                 else {
                     goalState[i][j] = tilesNumber++;
                 }
-
-
             }
         }
 
@@ -147,5 +145,4 @@ public class Main {
             System.out.println();
         }
     }
-
 }

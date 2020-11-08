@@ -1,9 +1,9 @@
 public enum Directions {
     NONE(""),
-    UP("Up"),
-    DOWN("Down"),
-    RIGHT("Right"),
-    LEFT("Left");
+    UP("up"),
+    DOWN("down"),
+    RIGHT("right"),
+    LEFT("left");
 
     private final String letter;
 
