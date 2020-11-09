@@ -10,7 +10,7 @@ class NQueensMinConflictsTest {
         final int numberOfQueens = 4;
         NQueensMinConflicts nQueensMinConflicts = new NQueensMinConflicts(numberOfQueens);
 
-        assertTimeout(Duration.ofMillis(1000), nQueensMinConflicts::minConflicts);
+        assertTimeoutPreemptively(Duration.ofMillis(1000), nQueensMinConflicts::minConflicts);
     }
 
     @Test
@@ -18,6 +18,6 @@ class NQueensMinConflictsTest {
         final int numberOfQueens = 17_500;
         NQueensMinConflicts nQueensMinConflicts = new NQueensMinConflicts(numberOfQueens);
 
-        assertTimeout(Duration.ofMillis(1000), nQueensMinConflicts::minConflicts);
+        assertTimeoutPreemptively(Duration.ofMillis(1000), nQueensMinConflicts::minConflicts);
     }
 }
