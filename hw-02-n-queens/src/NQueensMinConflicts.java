@@ -49,22 +49,20 @@ public class NQueensMinConflicts {
         while (currentIterations++ < MAX_ITERATIONS) {
             conflicts();
 
-            int col = colWithMaxConflicts.get(random.nextInt(colWithMaxConflicts.size()));//getColWithMaxConflicts();
+            int col = getColWithMaxConflicts();
 
             if (maxConflicts == 0) {
                 //    print();
                 break;
             }
 
-            int row = rowWithMinConflicts.get(random.nextInt(rowWithMinConflicts.size()));//getRowWithMinConflicts(col);
+            int row = getRowWithMinConflicts(col);
 
             // move queen
             queens[col] = row;
 
             --colConflicts[col];
             ++rowConflicts[row];
-
-            // diag conflicts adjustment?
 
             if (col == row || col + row == numberOfQueens - 1) {
 
