@@ -1,108 +1,35 @@
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
-
-/**
- * Construction of the board and implementation of Min Conflicts algorithm
- */
 public class NQueensMinConflicts {
-    private int numberOfQueens;
+    private final int numberOfQueens;
     private int[] queens;
-    private int[] colConfl;
-    private int[] rowConfl;
-    private int[] diagConfl;
-    private ArrayList<Integer> colWithMaxConfl;
-    private ArrayList<Integer> rowWithMinConfl;
+
+    private int[] colConflicts;
+    private int[] rowConflicts;
+    private int[] diagConflicts;
+
+    private ArrayList<Integer> colWithMaxConflicts;
+    private ArrayList<Integer> rowWithMinConflicts;
+
+    private final Random random;
+
     private int maxConflicts;
-    private Random random;
     private final int MAX_ITERATIONS;
 
     public NQueensMinConflicts(int numberOfQueens) {
         this.numberOfQueens = numberOfQueens;
-        maxConflicts = 0;
-        random = new Random();
-        colWithMaxConfl = new ArrayList<>();
-        rowWithMinConfl = new ArrayList<>();
 
+        colWithMaxConflicts = new ArrayList<>();
+        rowWithMinConflicts = new ArrayList<>();
+
+        random = new Random();
+
+        maxConflicts = 0;
         MAX_ITERATIONS = 2 * numberOfQueens;
 
         initializeBoard();
-    }
-
-    /**
-     * Get the value of rows
-     *
-     * @return the value of rows
-     */
-    public int[] getRows() {
-        return queens;
-    }
-
-    /**
-     * Set the value of rows
-     *
-     * @param rows new value of rows
-     */
-    public void setRows(int[] rows) {
-        this.queens = rows;
-    }
-
-
-    /**
-     * Get the value of size
-     *
-     * @return the value of size
-     */
-    public int getNumberOfQueens() {
-        return numberOfQueens;
-    }
-
-    /**
-     * Set the value of size
-     *
-     * @param numberOfQueens new value of size
-     */
-    public void setNumberOfQueens(int numberOfQueens) {
-        this.numberOfQueens = numberOfQueens;
-    }
-
-    /**
-     * Make initial state with randomly placed queens to the rows
-     * The index i is the number of the column.
-     * The value of the rows[i] is the number of the column
-     */
-    private void initializeBoard() {
-        queens = new int[numberOfQueens];
-
-        colConfl = new int[numberOfQueens];
-        rowConfl = new int[numberOfQueens];
-        diagConfl = new int[2 * numberOfQueens];
-
-        for (int i = 0; i < numberOfQueens; ++i) {
-            colConfl[i] = -1;
-            rowConfl[i] = -1;
-            diagConfl[i] = -1;
-        }
-
-        for (int col = 0; col < numberOfQueens; ++col) {
-            int row = random.nextInt(numberOfQueens);
-            queens[col] = row;
-            ++colConfl[col];
-            ++rowConfl[row];
-
-            if (col == row && diagConfl[col] == -1) {
-                for (int i = 0; i < numberOfQueens; ++i) {
-                    ++diagConfl[i];
-                }
-            }
-
-            if (col + row == numberOfQueens - 1 && diagConfl[col + numberOfQueens] == -1) {
-                for (int i = numberOfQueens; i < 2 * numberOfQueens; ++i) {
-                    ++diagConfl[i];
-                }
-            }
-        }
     }
 
     /**
@@ -121,19 +48,23 @@ public class NQueensMinConflicts {
          */
         while (currentIterations++ < MAX_ITERATIONS) {
             conflicts();
-            int col = colWithMaxConfl.get(random.nextInt(colWithMaxConfl.size()));//getColWithMaxConflicts();
+
+            int col = colWithMaxConflicts.get(random.nextInt(colWithMaxConflicts.size()));//getColWithMaxConflicts();
 
             if (maxConflicts == 0) {
                 //    print();
-                System.out.println("finished : all conflicts resolved");
-                return;
+                break;
             }
 
-            int row = rowWithMinConfl.get(random.nextInt(rowWithMinConfl.size()));
-            queens[col] = row;//getRowWithMinConflicts(col);
+            int row = rowWithMinConflicts.get(random.nextInt(rowWithMinConflicts.size()));//getRowWithMinConflicts(col);
 
-            --colConfl[col];
-            ++rowConfl[row];
+            // move queen
+            queens[col] = row;
+
+            --colConflicts[col];
+            ++rowConflicts[row];
+
+            // diag conflicts adjustment?
 
             if (col == row || col + row == numberOfQueens - 1) {
 
@@ -147,12 +78,50 @@ public class NQueensMinConflicts {
         }
     }
 
+    /**
+     * Make initial state with randomly placed queens to the rows
+     * The index i is the number of the column.
+     * The value queens[i] is the row number in which the queen is placed
+     */
+    private void initializeBoard() {
+        queens = new int[numberOfQueens];
+
+        colConflicts = new int[numberOfQueens];
+        rowConflicts = new int[numberOfQueens];
+        diagConflicts = new int[2 * numberOfQueens];
+
+        for (int i = 0; i < numberOfQueens; ++i) {
+            colConflicts[i] = -1;
+            rowConflicts[i] = -1;
+            diagConflicts[i] = -1;
+        }
+
+        for (int col = 0; col < numberOfQueens; ++col) {
+            int row = random.nextInt(numberOfQueens);
+            queens[col] = row;
+            ++colConflicts[col];
+            ++rowConflicts[row];
+
+            if (col == row && diagConflicts[col] == -1) {
+                for (int i = 0; i < numberOfQueens; ++i) {
+                    ++diagConflicts[i];
+                }
+            }
+
+            if (col + row == numberOfQueens - 1 && diagConflicts[col + numberOfQueens] == -1) {
+                for (int i = numberOfQueens; i < 2 * numberOfQueens; ++i) {
+                    ++diagConflicts[i];
+                }
+            }
+        }
+    }
+
     private void conflicts() {
-        int minConfl = (queens[0] != 0) ? (colConfl[0] + rowConfl[0] + diagConfl[0] - 1) : (colConfl[0] + rowConfl[0] - 1);
+        int minConfl = (queens[0] != 0) ? (colConflicts[0] + rowConflicts[0] + diagConflicts[0] - 1) : (colConflicts[0] + rowConflicts[0] - 1);
         int maxConfl = minConfl;
 
-        rowWithMinConfl.add(0);
-        colWithMaxConfl.add(0);
+        rowWithMinConflicts.add(0);
+        colWithMaxConflicts.add(0);
 
         for (int row = 0; row < numberOfQueens; ++row) {
             for (int col = 0; col < numberOfQueens; col++) {
@@ -160,15 +129,15 @@ public class NQueensMinConflicts {
                     continue;
                 }
 
-                int confl = colConfl[col] + rowConfl[row];
+                int confl = colConflicts[col] + rowConflicts[row];
 
                 if (queens[col] != row) {
                     if (col == row) {
-                        confl += diagConfl[col] - 1;
+                        confl += diagConflicts[col] - 1;
                     }
 
                     if (col + row == numberOfQueens - 1) {
-                        confl += diagConfl[col + numberOfQueens] - 1;
+                        confl += diagConflicts[col + numberOfQueens] - 1;
                     }
                 }
                 else {
@@ -178,22 +147,22 @@ public class NQueensMinConflicts {
 
                 if (confl < minConfl) {
                     minConfl = confl;
-                    rowWithMinConfl.clear();
-                    rowWithMinConfl.add(row);
+                    rowWithMinConflicts.clear();
+                    rowWithMinConflicts.add(row);
                 }
 
                 if (maxConfl < confl) {
-                    colWithMaxConfl.clear();
+                    colWithMaxConflicts.clear();
                     maxConfl = confl;
-                    colWithMaxConfl.add(col);
+                    colWithMaxConflicts.add(col);
                 }
 
                 if (minConfl == confl) {
-                    rowWithMinConfl.add(row);
+                    rowWithMinConflicts.add(row);
                 }
 
                 if (maxConfl == confl) {
-                    colWithMaxConfl.add(col);
+                    colWithMaxConflicts.add(col);
                 }
             }
         }
@@ -288,8 +257,10 @@ public class NQueensMinConflicts {
      * Print the result
      */
     private void print() {
-        for (int row = 0; row < numberOfQueens; ++row) {
-            for (int col = 0; col < numberOfQueens; ++col) {
+        System.out.println("finished : all conflicts resolved");
+
+        for (int row = 0; row < numberOfQueens; row++) {
+            for (int col = 0; col < numberOfQueens; col++) {
                 if (queens[col] == row) {
                     System.out.print("* ");
                 }
