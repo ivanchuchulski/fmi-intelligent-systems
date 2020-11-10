@@ -5,7 +5,13 @@ public class Main {
         int numberOfQueens = inputNumberOfQueens();
 
 //        nqueens1(numberOfQueens);
-        nqueens2(numberOfQueens);
+//        nqueens2(numberOfQueens);
+        nqueens3(numberOfQueens);
+    }
+
+    private static void nqueens3(int numberOfQueens) {
+        MyNQueens myNQueens = new MyNQueens(numberOfQueens);
+        myNQueens.resolveConflicts();
     }
 
     private static void nqueens2(int numberOfQueens) {
