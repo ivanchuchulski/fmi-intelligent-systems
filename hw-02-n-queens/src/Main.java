@@ -1,27 +1,24 @@
+import java.util.Calendar;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         int numberOfQueens = inputNumberOfQueens();
 
-//        nqueens1(numberOfQueens);
-//        nqueens2(numberOfQueens);
-        nqueens3(numberOfQueens);
+        solve(numberOfQueens);
     }
 
-    private static void nqueens3(int numberOfQueens) {
+    private static void solve(int numberOfQueens) {
+        long startTimestamp = Calendar.getInstance().getTimeInMillis();
+
         MyNQueens myNQueens = new MyNQueens(numberOfQueens);
         myNQueens.resolveConflicts();
-    }
+//        myNQueens.printSolutionBoard();
 
-    private static void nqueens2(int numberOfQueens) {
-        NQueens nQueens = new NQueens(numberOfQueens);
-        nQueens.getQueensPlace();
-    }
+        long finishTimestamp = Calendar.getInstance().getTimeInMillis();
+        long overallTime = finishTimestamp - startTimestamp;
 
-    private static void nqueens1(int numberOfQueens) {
-        NQueensMinConflicts nQueensMinConflicts = new NQueensMinConflicts(numberOfQueens);
-        nQueensMinConflicts.minConflicts();
+        System.out.printf("total time: %dms%n", overallTime);
     }
 
     private static int inputNumberOfQueens() {
@@ -29,12 +26,10 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("enter number of queens : ");
-
         result = scanner.nextInt();
 
         scanner.close();
 
         return result;
     }
-
 }

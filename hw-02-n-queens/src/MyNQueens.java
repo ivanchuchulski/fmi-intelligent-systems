@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class MyNQueens {
-    public static Random random;
+    public Random random;
 
     private final int size;
     private final int[] queens;
@@ -12,6 +12,8 @@ public class MyNQueens {
 
     private final List<Conflict> rowsWithMinConflicts;
     private final List<Conflict> colsWithMaxConflicts;
+
+    private final int NO_CONFLICTS_FOUND = -1;
 
     public MyNQueens(int size) {
         this.size = size;
@@ -25,9 +27,8 @@ public class MyNQueens {
         rowsWithMinConflicts = new ArrayList<>();
         colsWithMaxConflicts = new ArrayList<>();
 
-        int value = 0;
-        for (int i = 0; i < size; i++) {
-            queens[i] = value++;
+        for (int col = 0; col < size; col++) {
+            queens[col] = col;
         }
 
         init();
@@ -41,24 +42,22 @@ public class MyNQueens {
         init();
 
         while (currentIterations++ < MAX_ITERATIONS) {
-            int colWithMaxConfl = getColwWithMaxConflicts();
+            int columnWithMaxConflicts = getColumnWithMaxConflicts();
 
-            if (colWithMaxConfl == -1) {
+            if (columnWithMaxConflicts == NO_CONFLICTS_FOUND) {
                 conflictsResolved = true;
                 break;
             }
 
-            int prevRow = queens[colWithMaxConfl];
-            int nextRow = getRowWithMinConflicts(colWithMaxConfl);
+            int prevRow = queens[columnWithMaxConflicts];
+            int nextRow = getRowWithMinConflicts(columnWithMaxConflicts);
 
-            moveQueen(colWithMaxConfl, prevRow, nextRow);
+            moveQueen(columnWithMaxConflicts, prevRow, nextRow);
         }
 
         if (!conflictsResolved) {
             resolveConflicts();
         }
-
-//        printSolutionBoard();
     }
 
 
@@ -79,7 +78,7 @@ public class MyNQueens {
         }
     }
 
-    private int getColwWithMaxConflicts() {
+    private int getColumnWithMaxConflicts() {
         colsWithMaxConflicts.clear();
 
         for (int col = 0; col < size; ++col) {
@@ -102,7 +101,7 @@ public class MyNQueens {
         }
 
         if (colsWithMaxConflicts.get(0).value == 0) {
-            return -1;
+            return NO_CONFLICTS_FOUND;
         }
 
 
@@ -156,7 +155,7 @@ public class MyNQueens {
         return row + col;
     }
 
-//     source : https://stackoverflow.com/a/1520212/9127495
+    //     source : https://stackoverflow.com/a/1520212/9127495
     private void shuffleArray(int[] arr) {
         for (int i = arr.length - 1; i > 0; i--) {
             int index = random.nextInt(i + 1);

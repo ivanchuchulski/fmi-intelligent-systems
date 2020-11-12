@@ -76,7 +76,7 @@ class MyNQueensTest {
         final int numberOfQueens = 15000;
         MyNQueens mynqueens = new MyNQueens(numberOfQueens);
 
-        assertTimeoutPreemptively(Duration.ofMillis(1000), mynqueens::resolveConflicts);
+        assertTimeout(Duration.ofMillis(1000), mynqueens::resolveConflicts);
     }
 
     @Test
