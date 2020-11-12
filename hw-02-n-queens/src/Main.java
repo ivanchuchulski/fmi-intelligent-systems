@@ -13,7 +13,7 @@ public class Main {
 
         MyNQueens myNQueens = new MyNQueens(numberOfQueens);
         myNQueens.resolveConflicts();
-//        myNQueens.printSolutionBoard();
+        myNQueens.printSolutionBoard();
 
         long finishTimestamp = Calendar.getInstance().getTimeInMillis();
         long overallTime = finishTimestamp - startTimestamp;

@@ -10,8 +10,8 @@ public class MyNQueens {
     private final int[] mainDiagonalConflicts;
     private final int[] secondaryDiagonalConflicts;
 
-    private final List<Conflict> rowsWithMinConflicts;
-    private final List<Conflict> colsWithMaxConflicts;
+    private final List<Integer> colsWithMaxConflicts;
+    private final List<Integer> rowsWithMinConflicts;
 
     private final int NO_CONFLICTS_FOUND = -1;
 
@@ -24,8 +24,8 @@ public class MyNQueens {
         mainDiagonalConflicts = new int[2 * size - 1];
         secondaryDiagonalConflicts = new int[2 * size - 1];
 
-        rowsWithMinConflicts = new ArrayList<>();
         colsWithMaxConflicts = new ArrayList<>();
+        rowsWithMinConflicts = new ArrayList<>();
 
         for (int col = 0; col < size; col++) {
             queens[col] = col;
@@ -80,59 +80,62 @@ public class MyNQueens {
 
     private int getColumnWithMaxConflicts() {
         colsWithMaxConflicts.clear();
+        int maxConflictCount = Integer.MIN_VALUE;
 
         for (int col = 0; col < size; ++col) {
             int row = queens[col];
 
-            int candidate =
-                    rowConflicts[row] +
-                            mainDiagonalConflicts[getMainDiagonalIndexForCell(row, col)] +
-                            secondaryDiagonalConflicts[getSecDiagonalIndexForCell(row, col)] - 3;
+            int currentConflicts = getConflictsForQueen(row, col) - 3;
 
-            if (colsWithMaxConflicts.isEmpty() || colsWithMaxConflicts.get(0).value == candidate) {
-                colsWithMaxConflicts.add(new Conflict(col, candidate));
+            if (colsWithMaxConflicts.isEmpty() || currentConflicts == maxConflictCount) {
+                maxConflictCount = currentConflicts;
+                colsWithMaxConflicts.add(col);
             }
             else {
-                if (colsWithMaxConflicts.get(0).value < candidate) {
+                if (currentConflicts > maxConflictCount) {
+                    maxConflictCount = currentConflicts;
+
                     colsWithMaxConflicts.clear();
-                    colsWithMaxConflicts.add(new Conflict(col, candidate));
+
+                    colsWithMaxConflicts.add(col);
                 }
             }
         }
 
-        if (colsWithMaxConflicts.get(0).value == 0) {
+        if (maxConflictCount == 0) {
             return NO_CONFLICTS_FOUND;
         }
 
-
-        return colsWithMaxConflicts.get(random.nextInt(colsWithMaxConflicts.size())).place;
+        return colsWithMaxConflicts.get(random.nextInt(colsWithMaxConflicts.size()));
     }
 
     private int getRowWithMinConflicts(int colWithMaxConfl) {
         rowsWithMinConflicts.clear();
+        int minConflictCount = Integer.MAX_VALUE;
 
         for (int row = 0; row < size; ++row) {
-            int candidate =
-                    rowConflicts[row] +
-                            mainDiagonalConflicts[getMainDiagonalIndexForCell(row, colWithMaxConfl)] +
-                            secondaryDiagonalConflicts[getSecDiagonalIndexForCell(row, colWithMaxConfl)];
+            int currentConflicts = getConflictsForQueen(row, colWithMaxConfl);
 
             if (row == queens[colWithMaxConfl]) {
-                candidate -= 3;
+                currentConflicts -= 3;
             }
 
-            if (rowsWithMinConflicts.isEmpty() || rowsWithMinConflicts.get(0).value == candidate) {
-                rowsWithMinConflicts.add(new Conflict(row, candidate));
+            if (rowsWithMinConflicts.isEmpty() || currentConflicts == minConflictCount) {
+                minConflictCount = currentConflicts;
+                rowsWithMinConflicts.add(row);
             }
             else {
-                if (rowsWithMinConflicts.get(0).value > candidate) {
+                if (currentConflicts < minConflictCount) {
+                    minConflictCount = currentConflicts;
+
                     rowsWithMinConflicts.clear();
-                    rowsWithMinConflicts.add(new Conflict(row, candidate));
+
+                    rowsWithMinConflicts.add(row);
                 }
             }
         }
 
-        return rowsWithMinConflicts.get(random.nextInt(rowsWithMinConflicts.size())).place;
+        return rowsWithMinConflicts.get(random.nextInt(rowsWithMinConflicts.size()));
     }
 
     private void moveQueen(int colWithMaxConfl, int prevRow, int nextRow) {
@@ -166,6 +169,12 @@ public class MyNQueens {
         }
     }
 
+    private int getConflictsForQueen(int row, int col) {
+        return rowConflicts[row] +
+                mainDiagonalConflicts[getMainDiagonalIndexForCell(row, col)] +
+                secondaryDiagonalConflicts[getSecDiagonalIndexForCell(row, col)];
+    }
+
     public void printSolutionBoard() {
         System.out.println("finished : all conflicts resolved");
 
@@ -177,7 +186,7 @@ public class MyNQueens {
                     System.out.print("* ");
                 }
                 else {
-                    System.out.print("_ ");
+                    System.out.print("- ");
                 }
             }
             System.out.println();
