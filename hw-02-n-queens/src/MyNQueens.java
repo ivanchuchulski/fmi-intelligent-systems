@@ -60,9 +60,9 @@ public class MyNQueens {
         }
     }
 
-
     private void init() {
         random = new Random();
+
         shuffleArray(queens);
 
         Arrays.fill(rowConflicts, 0);

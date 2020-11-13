@@ -81,7 +81,7 @@ public class IDAStar {
             return node.getTotalCostF();
         }
 
-        if (isGoalReached()) {
+        if (node.getManhattanH() == 0) {
             numberOfStepsToSolution = node.getStepsFromStartG();
             return FOUND;
         }

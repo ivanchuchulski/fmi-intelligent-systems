@@ -458,6 +458,99 @@ class IDAStarTest {
         assertEquals(steps, idaStar.getNumberOfStepsToSolution());
     }
 
+    @Test
+    public void lab_test_3x3_1() {
+        int[][] initialState = buildBoardFromString("653248701");
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 21;
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
+    }
+
+    @Test
+    public void lab_test_3x3_2() {
+        int[][] initialState = buildBoardFromString("236158470");
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 8;
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
+    }
+
+    @Test
+    public void lab_test_3x3_3() {
+        int[][] initialState = buildBoardFromString("867254301");
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 31;
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
+    }
+
+    @Test
+    public void lab_test_3x3_4() {
+        int[][] initialState = buildBoardFromString("647850321");
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 31;
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
+    }
+
+    @Test
+    public void lab_test_4x4_1() {
+        int[][] initialState = buildBoardFromArray(new int[]{5, 6, 3, 4, 8, 0, 1, 15, 10, 7, 2, 11, 12, 9, 14, 13});
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 40;
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
+    }
+
+    @Test
+    @Disabled
+    public void lab_test_4x4_2() {
+        int[][] initialState = buildBoardFromArray(new int[]{9, 5, 1, 12, 10, 0, 11, 13, 3, 7, 14, 6, 2, 8, 15, 4});
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 56;
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
+    }
+
+    @Test
+    @Disabled
+    public void lab_test_4x4_3() {
+        int[][] initialState = buildBoardFromArray(new int[]{14, 15, 8, 12, 10, 11, 9, 13, 2, 6, 5, 1, 3, 7, 4, 0});
+        int[][] goalState = generateDefualtGoalState(initialState);
+
+        final int steps = 66;
+
+        IDAStar idaStar = new IDAStar(initialState, goalState);
+        idaStar.findSolution();
+
+        assertEquals(steps, idaStar.getNumberOfStepsToSolution());
+    }
+
 
     private int[][] buildBoardFromString(String boardAsString) {
         int length = (int) Math.sqrt(boardAsString.length());
