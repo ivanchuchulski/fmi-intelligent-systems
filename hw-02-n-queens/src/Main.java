@@ -11,9 +11,9 @@ public class Main {
     private static void solve(int numberOfQueens) {
         long startTimestamp = Calendar.getInstance().getTimeInMillis();
 
-        MyNQueens myNQueens = new MyNQueens(numberOfQueens);
-        myNQueens.resolveConflicts();
-//        myNQueens.printSolutionBoard();
+        NQueens nQueens = new NQueens(numberOfQueens);
+        nQueens.resolveConflicts();
+        nQueens.printSolutionBoard();
 
         long finishTimestamp = Calendar.getInstance().getTimeInMillis();
         long overallTime = finishTimestamp - startTimestamp;

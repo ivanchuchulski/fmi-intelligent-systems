@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class MyNQueens {
+public class NQueens {
     public Random random;
 
     private final int size;
@@ -15,7 +15,7 @@ public class MyNQueens {
 
     private final int NO_CONFLICTS_FOUND = -1;
 
-    public MyNQueens(int size) {
+    public NQueens(int size) {
         this.size = size;
 
         queens = new int[size];
@@ -109,14 +109,14 @@ public class MyNQueens {
         return colsWithMaxConflicts.get(random.nextInt(colsWithMaxConflicts.size()));
     }
 
-    private int getRowWithMinConflicts(int colWithMaxConfl) {
+    private int getRowWithMinConflicts(int columnWithMaxConflicts) {
         rowsWithMinConflicts.clear();
         int minConflictCount = Integer.MAX_VALUE;
 
         for (int row = 0; row < size; ++row) {
-            int currentConflicts = getConflictsForQueen(row, colWithMaxConfl);
+            int currentConflicts = getConflictsForQueen(row, columnWithMaxConflicts);
 
-            if (row == queens[colWithMaxConfl]) {
+            if (row == queens[columnWithMaxConflicts]) {
                 currentConflicts -= 3;
             }
 
@@ -138,16 +138,16 @@ public class MyNQueens {
         return rowsWithMinConflicts.get(random.nextInt(rowsWithMinConflicts.size()));
     }
 
-    private void moveQueen(int colWithMaxConfl, int prevRow, int nextRow) {
-        queens[colWithMaxConfl] = nextRow;
+    private void moveQueen(int columnWithMaxConflicts, int prevRow, int nextRow) {
+        queens[columnWithMaxConflicts] = nextRow;
 
         rowConflicts[prevRow]--;
-        mainDiagonalConflicts[getMainDiagonalIndexForCell(prevRow, colWithMaxConfl)]--;
-        secondaryDiagonalConflicts[getSecDiagonalIndexForCell(prevRow, colWithMaxConfl)]--;
+        mainDiagonalConflicts[getMainDiagonalIndexForCell(prevRow, columnWithMaxConflicts)]--;
+        secondaryDiagonalConflicts[getSecDiagonalIndexForCell(prevRow, columnWithMaxConflicts)]--;
 
         rowConflicts[nextRow]++;
-        mainDiagonalConflicts[getMainDiagonalIndexForCell(nextRow, colWithMaxConfl)]++;
-        secondaryDiagonalConflicts[getSecDiagonalIndexForCell(nextRow, colWithMaxConfl)]++;
+        mainDiagonalConflicts[getMainDiagonalIndexForCell(nextRow, columnWithMaxConflicts)]++;
+        secondaryDiagonalConflicts[getSecDiagonalIndexForCell(nextRow, columnWithMaxConflicts)]++;
     }
 
     private int getMainDiagonalIndexForCell(int row, int col) {
@@ -158,7 +158,7 @@ public class MyNQueens {
         return row + col;
     }
 
-    //     source : https://stackoverflow.com/a/1520212/9127495
+    //    source : https://stackoverflow.com/a/1520212/9127495
     private void shuffleArray(int[] arr) {
         for (int i = arr.length - 1; i > 0; i--) {
             int index = random.nextInt(i + 1);
