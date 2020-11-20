@@ -33,19 +33,16 @@ public class Main {
             population.add(new Path(travelPrices));
         }
 
-        population.forEach(Path::printPath);
+//        population.forEach(Path::printPath);
 
         List<Path> bestsAtStart = getBestFromPopulation(numberOfCities, population);
 
-        int maxSteps = 5;
+        int maxSteps = 5000;
         int currentSteps = 0;
         double mutationPercent = 0.05;
 
         do {
             List<Path> bestPaths = getBestFromPopulation(numberOfCities, population);
-
-            System.out.println("best paths");
-            bestPaths.forEach(Path::printPath);
 
             Path firstParent = bestPaths.get(getRandomIntInRange(0, bestPaths.size()));
             Path secondParent = bestPaths.get(getRandomIntInRange(0, bestPaths.size()));
@@ -55,18 +52,12 @@ public class Main {
             }
 
             Crossover crossover = new Crossover(firstParent, secondParent);
-            List<Path> children = crossover.partiallyMappedCrossover();
+            List<Path> children = crossover.twoPointCrossover();
 
-            System.out.println("parents");
-            firstParent.printPath();
-            secondParent.printPath();
-
-            System.out.println("children");
-            for (Path child : children) {
-                child.printPath();
-            }
+//            printInfo(bestPaths, firstParent, secondParent, children);
 
             // mutation here
+            
 
             population.addAll(children);
 
@@ -85,6 +76,20 @@ public class Main {
         System.out.println("best paths at end");
         bestPaths.forEach(Path::printPath);
 
+    }
+
+    private static void printInfo(List<Path> bestPaths, Path firstParent, Path secondParent, List<Path> children) {
+        System.out.println("best paths");
+        bestPaths.forEach(Path::printPath);
+
+        System.out.println("parents");
+        firstParent.printPath();
+        secondParent.printPath();
+
+        System.out.println("children");
+        for (Path child : children) {
+            child.printPath();
+        }
     }
 
     private static int inputNumberOfCities() {

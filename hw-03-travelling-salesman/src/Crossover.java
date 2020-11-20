@@ -21,8 +21,8 @@ public class Crossover {
         int[] firstChild = new int[numberOfCities];
         int[] secondChild = new int[numberOfCities];
 
-        int left = Main.getRandomIntInRange(0, numberOfCities);
-        int right = Main.getRandomIntInRange(left + 1, numberOfCities);
+        int left = Main.getRandomIntInRange(0, numberOfCities - 1);
+        int right = Main.getRandomIntInRange(left + 1, numberOfCities - 1);
 
         for (int i = 0; i < numberOfCities; ++i) {
             if (i >= left && i <= right) {
@@ -34,47 +34,28 @@ public class Crossover {
             }
         }
 
-        Set<Integer> childOneGenes = new HashSet<>();
         Set<Integer> childTwoGenes = new HashSet<>();
 
+        Set<Integer> childOneGenes = new HashSet<>();
+
         for (int gene : firstChild) {
-            childOneGenes.add(gene);
+            if (gene != -1) {
+                childOneGenes.add(gene);
+            }
         }
 
         for (int gene : secondChild) {
-            childTwoGenes.add(gene);
+            if (gene != -1) {
+                childTwoGenes.add(gene);
+            }
         }
 
         // TODO not finished
-        int indexForFirst = right;
-        for (int i = right + 1; i < secondParentPath.length; i++) {
-            int gene = secondParentPath[i];
-
-            if (!childOneGenes.contains(gene)) {
-                firstChild[right++] = gene;
-                childOneGenes.add(gene);
-
-                if (right >= numberOfCities) {
-                    right = 0;
-                }
-            }
-        }
-
-        for (int i = 0; i < left; i++) {
-            int gene = secondParentPath[i];
-
-            if (!childOneGenes.contains(gene)) {
-                firstChild[right++] = gene;
-                childOneGenes.add(gene);
-
-                if (right >= numberOfCities) {
-                    right = 0;
-                }
-            }
-        }
+        // the first child
+        fillChild(numberOfCities, secondParentPath, firstChild, childOneGenes, left, right);
 
         // the same for the second child
-
+        fillChild(numberOfCities, firstParentPath, secondChild, childTwoGenes, left, right);
 
         int[][] travelPrices = firstParent.getTravelPrices();
         List<Path> childrenPaths = new ArrayList<>();
@@ -84,7 +65,49 @@ public class Crossover {
         return childrenPaths;
     }
 
-    List<Path> partiallyMappedCrossover() {
+    private void fillChild(int numberOfCities, int[] otherParent, int[] child, Set<Integer> childGenes, int left,
+                           int right) {
+        int indexForChild = right + 1;
+        for (int i = right + 1; i < otherParent.length; i++) {
+            int gene = otherParent[i];
+
+            if (!childGenes.contains(gene)) {
+                child[indexForChild++] = gene;
+                childGenes.add(gene);
+
+                if (indexForChild >= numberOfCities) {
+                    indexForChild = 0;
+                }
+            }
+        }
+
+        if (indexForChild == numberOfCities) {
+            indexForChild = 0;
+        }
+
+        for (int i = 0; i < otherParent.length; i++) {
+            int gene = otherParent[i];
+
+            if (childGenes.size() == numberOfCities) {
+                break;
+            }
+
+            if (!childGenes.contains(gene)) {
+                child[indexForChild++] = gene;
+                childGenes.add(gene);
+
+                if (indexForChild >= numberOfCities) {
+                    indexForChild = 0;
+                }
+            }
+        }
+    }
+
+    // source : https://stackabuse.com/traveling-salesman-problem-with-genetic-algorithms-in-java/
+    /*
+    the fixed part is after the breakpoint
+     */
+    List<Path> partiallyMappedCrossoverWithOneFixedPoint() {
         int[][] travelPrices = firstParent.getTravelPrices();
         int numberOfCities = firstParent.getPath().length;
 
