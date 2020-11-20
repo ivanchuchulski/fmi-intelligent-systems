@@ -9,7 +9,6 @@ possible crossovers
     1 point, 2 point
     partially mapped
     cycle
-
  */
 
 /*
@@ -37,9 +36,11 @@ public class Main {
 
         List<Path> bestsAtStart = getBestFromPopulation(numberOfCities, population);
 
-        int maxSteps = 5000;
+//        int maxSteps = 550;
+        int maxSteps = population.size() * 5;
         int currentSteps = 0;
         double mutationPercent = 0.05;
+        int numberOfMutations = 0;
 
         do {
             List<Path> bestPaths = getBestFromPopulation(numberOfCities, population);
@@ -56,8 +57,12 @@ public class Main {
 
 //            printInfo(bestPaths, firstParent, secondParent, children);
 
-            // mutation here
-            
+            if (random.nextFloat() <= mutationPercent) {
+                numberOfMutations++;
+                for (Path child : children) {
+                    child.mutatePath();
+                }
+            }
 
             population.addAll(children);
 
@@ -76,6 +81,7 @@ public class Main {
         System.out.println("best paths at end");
         bestPaths.forEach(Path::printPath);
 
+        System.out.println("number of mutations : " + numberOfMutations);
     }
 
     private static void printInfo(List<Path> bestPaths, Path firstParent, Path secondParent, List<Path> children) {
@@ -114,11 +120,18 @@ public class Main {
             matrix[i][i] = 0;
             for (int j = i + 1 ; j < size ; ++j) {
                 matrix[i][j] = getRandomInt(2 * size);
+
+//                matrix[i][j] = getRandomIntInRange(0, 2 * size) + 1;
+
                 matrix[j][i] = matrix[i][j];
             }
         }
 
-//        System.out.println(Arrays.deepToString(matrix));
+//        for (int[] rows : matrix) {
+//            System.out.println(Arrays.toString(rows));
+//        }
+//
+//        System.exit(1);
 
         return matrix;
     }

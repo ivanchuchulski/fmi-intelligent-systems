@@ -42,8 +42,8 @@ public class Path {
     }
 
     void mutatePath() {
-        int first = Main.getRandomInt(path.length);
-        int second = Main.getRandomInt(path.length);
+        int first = Main.getRandomIntInRange(0, path.length - 1);
+        int second = Main.getRandomIntInRange(0, path.length - 1);
 
         // swap mutation
         int temp = path[first];
