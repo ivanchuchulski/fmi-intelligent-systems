@@ -19,31 +19,72 @@ possible mutations
     reverse
  */
 public class Main {
-    private static Random random = new Random(System.currentTimeMillis());
+    private static final Random random = new Random(System.currentTimeMillis());
+    private static final PathLengthComparator pathLengthComparator = new PathLengthComparator();
 
     public static void main(String[] args) {
-
         int numberOfCities = inputNumberOfCities();
-        int maxSteps;
-        int mutationStep;
         int[][] travelPrices = generateRandomMatrix(numberOfCities);
+
+
         List<Path> population = new ArrayList<>();
 
         while (population.size() < numberOfCities) {
             population.add(new Path(travelPrices));
         }
 
-//        System.out.println(Arrays.deepToString(travelPrices));
-
         population.forEach(Path::printPath);
 
-        List<Path> bestPaths = population.stream()
-                .sorted(new PathLengthComparator())
-                .limit((int) (numberOfCities * 0.3))
-                .collect(Collectors.toList());
+        List<Path> bestsAtStart = getBestFromPopulation(numberOfCities, population);
 
-        System.out.println("best paths");
+        int maxSteps = 5;
+        int currentSteps = 0;
+        double mutationPercent = 0.05;
+
+        do {
+            List<Path> bestPaths = getBestFromPopulation(numberOfCities, population);
+
+            System.out.println("best paths");
+            bestPaths.forEach(Path::printPath);
+
+            Path firstParent = bestPaths.get(getRandomIntInRange(0, bestPaths.size()));
+            Path secondParent = bestPaths.get(getRandomIntInRange(0, bestPaths.size()));
+
+            if (firstParent == secondParent) {
+                continue;
+            }
+
+            Crossover crossover = new Crossover(firstParent, secondParent);
+            List<Path> children = crossover.partiallyMappedCrossover();
+
+            System.out.println("parents");
+            firstParent.printPath();
+            secondParent.printPath();
+
+            System.out.println("children");
+            for (Path child : children) {
+                child.printPath();
+            }
+
+            // mutation here
+
+            population.addAll(children);
+
+            population = population.stream()
+                    .sorted(pathLengthComparator)
+                    .limit(numberOfCities)
+                    .collect(Collectors.toList());
+
+        } while (currentSteps++ < maxSteps);
+
+        List<Path> bestPaths = getBestFromPopulation(numberOfCities, population);
+
+        System.out.println("best paths at start");
+        bestsAtStart.forEach(Path::printPath);
+
+        System.out.println("best paths at end");
         bestPaths.forEach(Path::printPath);
+
     }
 
     private static int inputNumberOfCities() {
@@ -71,6 +112,9 @@ public class Main {
                 matrix[j][i] = matrix[i][j];
             }
         }
+
+//        System.out.println(Arrays.deepToString(matrix));
+
         return matrix;
     }
 
@@ -78,9 +122,21 @@ public class Main {
         if (bound <= 0) {
             return 0;
         }
-
 //        random.setSeed(System.currentTimeMillis());
-
         return random.nextInt(bound) + 1;
+    }
+
+    // source : https://www.baeldung.com/java-generating-random-numbers-in-range
+    public static int getRandomIntInRange(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
+
+    private static List<Path> getBestFromPopulation(int numberOfCities, List<Path> population) {
+        final double BEST_PATHS_PERCENT = 0.2;
+
+        return population.stream()
+                .sorted(pathLengthComparator)
+                .limit((int) (numberOfCities * BEST_PATHS_PERCENT))
+                .collect(Collectors.toList());
     }
 }

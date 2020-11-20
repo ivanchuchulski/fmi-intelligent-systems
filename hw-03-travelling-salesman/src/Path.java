@@ -21,7 +21,7 @@ public class Path {
         calculatePathFitness();
     }
 
-    public Path(int[][] travelPrices, int[] path, int fitness) {
+    public Path(int[][] travelPrices, int[] path) {
         this.travelPrices = travelPrices;
         this.path = path;
         this.fitness = 0;
@@ -37,6 +37,10 @@ public class Path {
         return path;
     }
 
+    public int[][] getTravelPrices() {
+        return travelPrices;
+    }
+
     void mutatePath() {
         int first = Main.getRandomInt(path.length);
         int second = Main.getRandomInt(path.length);
@@ -50,7 +54,8 @@ public class Path {
     }
 
     void printPath() {
-        System.out.println(Arrays.toString(path)  + " " + getFitness());
+        System.out.print(getFitness());
+        System.out.println(" " + Arrays.toString(path));
     }
 
     @Override
@@ -82,7 +87,7 @@ public class Path {
     }
 
     private void calculatePathFitness() {
-        for (int i = 1 ; i < path.length ; ++i) {
+        for (int i = 1; i < path.length; i++) {
             int fromCity = path[i - 1];
             int toCity = path[i];
             this.fitness += travelPrices[fromCity][toCity];
