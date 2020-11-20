@@ -1,22 +1,8 @@
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-/*
-possible crossovers
-    1 point, 2 point
-    partially mapped
-    cycle
- */
-
-/*
-possible mutations
-    swap
-    insertion
-    reverse
- */
 public class Main {
     private static final Random random = new Random(System.currentTimeMillis());
     private static final PathLengthComparator pathLengthComparator = new PathLengthComparator();
@@ -25,77 +11,18 @@ public class Main {
         int numberOfCities = inputNumberOfCities();
         int[][] travelPrices = generateRandomMatrix(numberOfCities);
 
+        GeneticTSP geneticTSP = new GeneticTSP(numberOfCities, travelPrices);
 
-        List<Path> population = new ArrayList<>();
+        geneticTSP.evolve();
 
-        while (population.size() < numberOfCities) {
-            population.add(new Path(travelPrices));
-        }
-
-//        population.forEach(Path::printPath);
-
-        List<Path> bestsAtStart = getBestFromPopulation(numberOfCities, population);
-
-//        int maxSteps = 550;
-        int maxSteps = population.size() * 5;
-        int currentSteps = 0;
-        double mutationPercent = 0.05;
-        int numberOfMutations = 0;
-
-        do {
-            List<Path> bestPaths = getBestFromPopulation(numberOfCities, population);
-
-            Path firstParent = bestPaths.get(getRandomIntInRange(0, bestPaths.size()));
-            Path secondParent = bestPaths.get(getRandomIntInRange(0, bestPaths.size()));
-
-            if (firstParent == secondParent) {
-                continue;
-            }
-
-            Crossover crossover = new Crossover(firstParent, secondParent);
-            List<Path> children = crossover.twoPointCrossover();
-
-//            printInfo(bestPaths, firstParent, secondParent, children);
-
-            if (random.nextFloat() <= mutationPercent) {
-                numberOfMutations++;
-                for (Path child : children) {
-                    child.mutatePath();
-                }
-            }
-
-            population.addAll(children);
-
-            population = population.stream()
-                    .sorted(pathLengthComparator)
-                    .limit(numberOfCities)
-                    .collect(Collectors.toList());
-
-        } while (currentSteps++ < maxSteps);
-
-        List<Path> bestPaths = getBestFromPopulation(numberOfCities, population);
-
-        System.out.println("best paths at start");
-        bestsAtStart.forEach(Path::printPath);
+//        System.out.println("best paths at start");
+//        geneticTSP.getBestsAtStart().forEach(Path::printPath);
 
         System.out.println("best paths at end");
-        bestPaths.forEach(Path::printPath);
+        geneticTSP.getBestPathsAtEnd().forEach(Path::printPath);
 
-        System.out.println("number of mutations : " + numberOfMutations);
-    }
-
-    private static void printInfo(List<Path> bestPaths, Path firstParent, Path secondParent, List<Path> children) {
-        System.out.println("best paths");
-        bestPaths.forEach(Path::printPath);
-
-        System.out.println("parents");
-        firstParent.printPath();
-        secondParent.printPath();
-
-        System.out.println("children");
-        for (Path child : children) {
-            child.printPath();
-        }
+        System.out.println("total number of steps : " + geneticTSP.getMaxSteps());
+        System.out.println("number of mutations : " + geneticTSP.getNumberOfMutations());
     }
 
     private static int inputNumberOfCities() {
@@ -116,12 +43,12 @@ public class Main {
     private static int[][] generateRandomMatrix(int size) {
         int[][] matrix = new int[size][size];
 
-        for (int i = 0 ; i < size ; ++i) {
+        for (int i = 0; i < size; ++i) {
             matrix[i][i] = 0;
-            for (int j = i + 1 ; j < size ; ++j) {
-                matrix[i][j] = getRandomInt(2 * size);
+            for (int j = i + 1; j < size; ++j) {
+//                matrix[i][j] = getRandomInt(2 * size);
 
-//                matrix[i][j] = getRandomIntInRange(0, 2 * size) + 1;
+                matrix[i][j] = getRandomIntInRange(0, 2 * size) + 1 ;
 
                 matrix[j][i] = matrix[i][j];
             }
