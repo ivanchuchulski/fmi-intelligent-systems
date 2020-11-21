@@ -14,15 +14,6 @@ public class Main {
         GeneticTSP geneticTSP = new GeneticTSP(numberOfCities, travelPrices);
 
         geneticTSP.evolve();
-
-//        System.out.println("best paths at start");
-//        geneticTSP.getBestsAtStart().forEach(Path::printPath);
-
-        System.out.println("best paths at end");
-        geneticTSP.getBestPathsAtEnd().forEach(Path::printPath);
-
-        System.out.println("total number of steps : " + geneticTSP.getMaxSteps());
-        System.out.println("number of mutations : " + geneticTSP.getNumberOfMutations());
     }
 
     private static int inputNumberOfCities() {

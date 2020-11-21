@@ -29,6 +29,7 @@ public class GeneticTSP {
 
     public void evolve() {
         int currentSteps = 0;
+        int numberOfChildren = 0;
 
         Set<Path> population = new HashSet<>();
 
@@ -42,38 +43,31 @@ public class GeneticTSP {
         bestsAtStart.forEach(Path::printPath);
 
         do {
-            List<Path> bestPaths = getBestFromPopulation(numberOfCities, population);
+            int counter = 0;
 
-            if (currentSteps == 10) {
-                System.out.println("best paths after 10th step");
-                bestPaths.forEach(Path::printPath);
-            }
+            printProgression(currentSteps, getBestFromPopulation(numberOfCities, population));
 
-            if (currentSteps == maxSteps / 3) {
-                System.out.println("best paths after 1/3 of the steps");
-                bestPaths.forEach(Path::printPath);
-            }
+            do {
+                List<Path> bestPaths = getBestFromPopulation(numberOfCities, population);
 
-            if (currentSteps == 2 * maxSteps / 3) {
-                System.out.println("best paths after 2/3 of the steps");
-                bestPaths.forEach(Path::printPath);
-            }
+//                printProgression(currentSteps, bestPaths);
 
-            Path firstParent = bestPaths.get(Main.getRandomIntInRange(0, bestPaths.size()));
-            Path secondParent = bestPaths.get(Main.getRandomIntInRange(0, bestPaths.size()));
+                Path firstParent = bestPaths.get(Main.getRandomIntInRange(0, bestPaths.size()));
+                Path secondParent = bestPaths.get(Main.getRandomIntInRange(0, bestPaths.size()));
 
-            if (firstParent == secondParent) {
-                continue;
-            }
+                if (firstParent == secondParent) {
+                    continue;
+                }
 
-            Crossover crossover = new Crossover(firstParent, secondParent);
-            List<Path> children = crossover.twoPointCrossover();
+                Crossover crossover = new Crossover(firstParent, secondParent);
+                List<Path> children = crossover.twoPointCrossover();
+                numberOfChildren += 2;
 
-//            printStepInfo(bestPaths, firstParent, secondParent, children);
+                mutateChildren(children);
 
-            mutateChildren(children);
+                population.addAll(children);
 
-            population.addAll(children);
+            } while (counter++ < 0.2 * populationSize);
 
             population = population.stream()
                     .sorted(pathLengthComparator)
@@ -82,7 +76,16 @@ public class GeneticTSP {
 
         } while (currentSteps++ < maxSteps);
 
+
+
         bestPathsAtEnd = getBestFromPopulation(numberOfCities, population);
+
+        System.out.println("best paths at end");
+        bestPathsAtEnd.forEach(Path::printPath);
+
+        System.out.println("total number of steps : " + getMaxSteps());
+        System.out.println("number of children : " + numberOfChildren);
+        System.out.println("number of mutations : " + getNumberOfMutations());
     }
 
     private static void printStepInfo(List<Path> bestPaths, Path firstParent, Path secondParent, List<Path> children) {
@@ -108,10 +111,27 @@ public class GeneticTSP {
 
     private void mutateChildren(List<Path> children) {
         if (random.nextFloat() <= mutationPercent) {
-            numberOfMutations++;
+            numberOfMutations += 2;
             for (Path child : children) {
                 child.mutatePath();
             }
+        }
+    }
+
+    public void printProgression(int currentSteps, List<Path> bestPaths) {
+        if (currentSteps == 10) {
+            System.out.println("best paths after 10th step");
+            bestPaths.forEach(Path::printPath);
+        }
+
+        if (currentSteps == maxSteps / 3) {
+            System.out.println("best paths after 1/3 of the steps");
+            bestPaths.forEach(Path::printPath);
+        }
+
+        if (currentSteps == 2 * maxSteps / 3) {
+            System.out.println("best paths after 2/3 of the steps");
+            bestPaths.forEach(Path::printPath);
         }
     }
 
