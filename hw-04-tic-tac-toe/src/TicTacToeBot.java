@@ -1,9 +1,9 @@
-public class AlphaBetaPruning {
+public class TicTacToeBot {
     private final int NEGATIVE_INFINITY;
     private final int POSITIVE_INFINITY;
     private final BoardPositionMapper boardPositionMapper = new BoardPositionMapper(3);
 
-    public AlphaBetaPruning() {
+    public TicTacToeBot() {
         NEGATIVE_INFINITY = Integer.MIN_VALUE;
         POSITIVE_INFINITY = Integer.MAX_VALUE;
     }
@@ -41,7 +41,7 @@ public class AlphaBetaPruning {
         int indexOfBestMove = -1;
 
         for (Integer move : board.getAvailableMoves()) {
-            Board modifiedBoard = board.copy();
+            Board modifiedBoard = board.copyBoard();
             modifiedBoard.makeMove(BoardPositionMapper.getRowFromIndex(move),
                     BoardPositionMapper.getColFromIndex(move));
 
@@ -78,7 +78,7 @@ public class AlphaBetaPruning {
         int indexOfBestMove = -1;
 
         for (Integer move : board.getAvailableMoves()) {
-            Board modifiedBoard = board.copy();
+            Board modifiedBoard = board.copyBoard();
             modifiedBoard.move(move);
             int score = start(modifiedBoard, playerSign, currentDepth + 1);
 

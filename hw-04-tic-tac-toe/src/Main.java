@@ -4,56 +4,69 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Board board = new Board();
-        AlphaBetaPruning bot = new AlphaBetaPruning();
+        TicTacToeBot bot = new TicTacToeBot();
+
         Scanner scanner = new Scanner(System.in);
-        Random random = new Random();
 
-        System.out.print("Select player (X or O): ");
-        String player = scanner.nextLine();
+        System.out.print("select do you want to be first (yes or no) : ");
+        boolean humanPlaysFirst = scanner.nextLine().equals("yes");
 
-        PlayerSign human = player.equals("X") ? PlayerSign.X_PLAYER : PlayerSign.O_PLAYER;
-        board.setPlayersTurn(human);
-
-        System.out.println("");
-
-        System.out.print("Select who is first (X or O): ");
-        String first = scanner.nextLine();
+        System.out.print("select your sign, X or O : ");
+        PlayerSign humanSign = scanner.nextLine().equals("X") ? PlayerSign.X_PLAYER : PlayerSign.O_PLAYER;
 
         int currentDepth = 0;
 
-        if (!first.equals(player)) {
-            board.setPlayersTurn(human == PlayerSign.X_PLAYER ? PlayerSign.O_PLAYER : PlayerSign.X_PLAYER);
+        if (humanPlaysFirst) {
+            board.setPlayersTurn(humanSign);
+        } else {
+            board.setPlayersTurn(humanSign == PlayerSign.X_PLAYER ? PlayerSign.O_PLAYER : PlayerSign.X_PLAYER);
 
             // this could be changed to be the optimal move
+            // now the bot makes random first move
+            Random random = new Random();
             board.makeMove(random.nextInt(3), random.nextInt(3));
 
             currentDepth++;
         }
 
         do {
-            boolean moveMade = false;
+            board.printBoard();
 
-            while (!moveMade) {
-                board.printBoard();
+            System.out.print("your turn : ");
+            String[] userTurn = scanner.nextLine().split(" ");
 
-                System.out.print("Your turn: ");
-                String[] userTurn = scanner.nextLine().split(" ");
+            int row = Integer.parseInt(userTurn[0]);
+            int col = Integer.parseInt(userTurn[1]);
 
-                moveMade = board.makeMove(Integer.parseInt(userTurn[0]), Integer.parseInt(userTurn[1]));
+            if (!board.isMoveLegal(row, col)) {
+                continue;
             }
 
+            board.makeMove(row, col);
+
+
             currentDepth++;
-            System.out.println("Opponent turn: ");
+
+            System.out.println("bot move: ");
             bot.start(board, board.getPlayersTurn(), currentDepth);
 
         } while (!board.isGameOver());
 
+        printGameResult(board);
+    }
+
+    private static void printGameResult(Board board) {
         board.printBoard();
 
-        if (board.getPlayerSymbol(board.getWinner()) == PlayerSign.getNone()) {
-            System.out.println("It's a draw!");
+        PlayerSign winner = board.getWinner();
+        char symbolFromPlayerSign = PlayerSign.getSymbolFromPlayerSign(winner);
+
+        System.out.println("game over");
+
+        if (symbolFromPlayerSign == PlayerSign.getNone()) {
+            System.out.println("it's a draw");
         } else {
-            System.out.printf("%s is the winner! %n", board.getPlayerSymbol(board.getWinner()));
+            System.out.println(symbolFromPlayerSign + " won");
         }
     }
 

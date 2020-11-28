@@ -1,14 +1,15 @@
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Set;
 
 public class Board {
-    private static final int BOARD_SIZE = 3;
+    private static final int boardSize = 3;
     private PlayerSign[][] board;
 
     private PlayerSign playersTurn;
     private PlayerSign winner;
 
-    private HashSet<Integer> movesAvailable;
+    private Set<Integer> movesAvailable;
 
     private int movesCount;
     private boolean isGameOver;
@@ -16,89 +17,13 @@ public class Board {
     public Board() {
         playersTurn = PlayerSign.NONE;
         winner = PlayerSign.NONE;
+
         movesCount = 0;
         isGameOver = false;
+
         movesAvailable = new HashSet<>();
 
         initializeBoard();
-    }
-
-    /**
-     * Get player's turn
-     *
-     * @return playersTurn
-     */
-    public PlayerSign getPlayersTurn() {
-        return playersTurn;
-    }
-
-    /**
-     * Set player's turn
-     *
-     * @param playersTurn
-     */
-    public void setPlayersTurn(PlayerSign playersTurn) {
-        this.playersTurn = playersTurn;
-    }
-
-    /**
-     * Get available moves
-     *
-     * @return set with available moves
-     */
-    public HashSet<Integer> getAvailableMoves() {
-        return movesAvailable;
-    }
-
-    /**
-     * Get the winner player
-     *
-     * @return winner
-     */
-    public PlayerSign getWinner() {
-        return winner;
-    }
-
-    /**
-     * Make a copy of the board
-     *
-     * @return the copy of the board
-     */
-    public Board copy() {
-        Board board = new Board();
-
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                board.board[i][j] = this.board[i][j];
-            }
-        }
-
-        board.playersTurn = this.playersTurn;
-        board.winner = this.winner;
-        board.movesAvailable = new HashSet<>();
-        board.movesAvailable.addAll(this.movesAvailable);
-        board.movesCount = this.movesCount;
-        board.isGameOver = this.isGameOver;
-
-        return board;
-    }
-
-    /**
-     * Initialize the board with empty spaces
-     */
-    private void initializeBoard() {
-        board = new PlayerSign[BOARD_SIZE][BOARD_SIZE];
-        for (PlayerSign[] playerSigns : board) {
-            Arrays.fill(playerSigns, PlayerSign.NONE);
-        }
-
-        movesAvailable.clear();
-
-        int size = BOARD_SIZE * BOARD_SIZE;
-
-        for (int i = 0; i < size; i++) {
-            movesAvailable.add(i);
-        }
     }
 
     /**
@@ -108,7 +33,7 @@ public class Board {
      * @return the mapped row and column on the board
      */
     public boolean move(int index) {
-        return makeMove(index / BOARD_SIZE, index % BOARD_SIZE);
+        return makeMove(index / boardSize, index % boardSize);
     }
 
     /**
@@ -120,15 +45,9 @@ public class Board {
      * else return false
      */
     public boolean makeMove(int row, int col) {
-        if (board[row][col] != PlayerSign.NONE) {
-            System.out.println("This place is not empty!");
-
-            return false;
-        }
-
         board[row][col] = playersTurn;
         ++movesCount;
-        movesAvailable.remove(row * BOARD_SIZE + col);
+        movesAvailable.remove(row * boardSize + col);
 
         isGameOver = isWinner();
 
@@ -137,14 +56,86 @@ public class Board {
         return true;
     }
 
-    /**
-     * Check whether the game is over
-     *
-     * @return true if there is a winner
-     * else return false
-     */
+    public boolean isMoveLegal(int row, int col) {
+        if (row < 0 || row > 3 || col < 0 || col > 3) {
+            System.out.println("error : moves is out of the board");
+            return false;
+        }
+
+        if (board[row][col] != PlayerSign.NONE) {
+            System.out.println("error : this tile is not empty");
+
+            return false;
+        }
+
+        return true;
+    }
+
+    public void printBoard() {
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+                System.out.print(PlayerSign.getSymbolFromPlayerSign(board[i][j]) + " ");
+            }
+
+            System.out.println();
+        }
+
+        System.out.println();
+    }
+
+
+    public PlayerSign getPlayersTurn() {
+        return playersTurn;
+    }
+
+    public void setPlayersTurn(PlayerSign playersTurn) {
+        this.playersTurn = playersTurn;
+    }
+
+    public Set<Integer> getAvailableMoves() {
+        return movesAvailable;
+    }
+
+    public PlayerSign getWinner() {
+        return winner;
+    }
+
     public boolean isGameOver() {
         return isGameOver;
+    }
+
+    public Board copyBoard() {
+        Board copy = new Board();
+
+        for (int i = 0; i < boardSize; i++) {
+            System.arraycopy(this.board[i], 0, copy.board[i], 0, boardSize);
+        }
+
+        copy.playersTurn = this.playersTurn;
+        copy.winner = this.winner;
+
+        copy.movesAvailable = new HashSet<>();
+        copy.movesAvailable.addAll(this.movesAvailable);
+
+        copy.movesCount = this.movesCount;
+        copy.isGameOver = this.isGameOver;
+
+        return copy;
+    }
+
+
+
+    private void initializeBoard() {
+        board = new PlayerSign[boardSize][boardSize];
+        for (PlayerSign[] playerSigns : board) {
+            Arrays.fill(playerSigns, PlayerSign.NONE);
+        }
+
+        movesAvailable.clear();
+
+        for (int square = 0; square < boardSize * boardSize; square++) {
+            movesAvailable.add(square);
+        }
     }
 
     /**
@@ -154,7 +145,7 @@ public class Board {
      * else return false
      */
     private boolean isWinner() {
-        for (int i = 0; i < BOARD_SIZE; ++i) {
+        for (int i = 0; i < boardSize; ++i) {
             /**
              * Column winner
              */
@@ -191,7 +182,7 @@ public class Board {
         /**
          * Draw
          */
-        if (movesCount == BOARD_SIZE * BOARD_SIZE && winner == PlayerSign.NONE) {
+        if (movesCount == boardSize * boardSize && winner == PlayerSign.NONE) {
             return true;
         }
 
@@ -201,43 +192,5 @@ public class Board {
         return false;
     }
 
-    /**
-     * Get the symbol of the winner player
-     *
-     * @param playerSign - the player, who is the winner
-     * @return the symbol of the winner player
-     */
-    public char getPlayerSymbol(PlayerSign playerSign) {
-        char result;
 
-        switch (playerSign) {
-            case X_PLAYER -> {
-                result = PlayerSign.getX();
-            }
-            case O_PLAYER -> {
-                result = PlayerSign.getO();
-            }
-            case NONE -> {
-                result = PlayerSign.getNone();
-            }
-            default -> throw new IllegalStateException("Unexpected value: " + playerSign);
-        }
-
-        return result;
-    }
-
-    /**
-     * Print the board
-     */
-    public void printBoard() {
-        for (int i = 0; i < BOARD_SIZE; ++i) {
-            for (int j = 0; j < BOARD_SIZE; ++j) {
-                System.out.print(getPlayerSymbol(board[i][j]) + " ");
-            }
-
-            System.out.println("");
-        }
-
-        System.out.println("");
-    }
 }

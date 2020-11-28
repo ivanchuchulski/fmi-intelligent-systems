@@ -1,7 +1,13 @@
 public enum PlayerSign {
-    X_PLAYER,
-    O_PLAYER,
-    NONE;
+    X_PLAYER('X'),
+    O_PLAYER('O'),
+    NONE('_');
+
+    private char symbol;
+
+    PlayerSign(char symbol) {
+        this.symbol = symbol;
+    }
 
     public static char getX(){
         return 'X';
@@ -13,5 +19,13 @@ public enum PlayerSign {
 
     public static char getNone(){
         return '_';
+    }
+
+    public char getSymbol() {
+        return this.symbol;
+    }
+
+    public static char getSymbolFromPlayerSign(PlayerSign playerSign) {
+        return playerSign.getSymbol();
     }
 }
