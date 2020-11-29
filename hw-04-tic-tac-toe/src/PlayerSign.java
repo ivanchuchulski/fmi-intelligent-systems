@@ -3,7 +3,7 @@ public enum PlayerSign {
     O_PLAYER('O'),
     NONE('_');
 
-    private char symbol;
+    private final char symbol;
 
     PlayerSign(char symbol) {
         this.symbol = symbol;

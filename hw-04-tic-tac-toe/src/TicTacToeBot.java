@@ -1,111 +1,88 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class TicTacToeBot {
     private final int NEGATIVE_INFINITY;
     private final int POSITIVE_INFINITY;
-    private final BoardPositionMapper boardPositionMapper = new BoardPositionMapper(3);
+    private final int NOT_SET = -1;
+
+    private List<NodeEvaluation> rootChildrenScore = new ArrayList<>();
 
     public TicTacToeBot() {
         NEGATIVE_INFINITY = Integer.MIN_VALUE;
         POSITIVE_INFINITY = Integer.MAX_VALUE;
     }
 
-
-    /**
-     * Alpha beta pruning algorithm implementation
-     *
-     * @param board        - board field
-     * @param playerSign   - player's turn
-     * @param currentDepth - current depth of tree search
-     * @return the score of the winner
-     */
-    public int start(Board board, PlayerSign playerSign, int currentDepth) {
+    public int botMove(Board board, PlayerSign playerSign, int currentDepth, int alpha, int beta) {
         if (board.isGameOver()) {
             return score(board, playerSign, currentDepth);
         }
 
+        int indexOfBestMove = NOT_SET;
         if (playerSign == board.getPlayersTurn()) {
-            return getMax(board, playerSign, NEGATIVE_INFINITY, POSITIVE_INFINITY, currentDepth);
+
+            for (Integer move : board.getAvailableMoves()) {
+                Board modifiedBoard = board.copyBoard();
+
+                int row = move / 3;
+                int col = move % 3;
+
+                modifiedBoard.makeMove(row, col);
+
+                int score = botMove(modifiedBoard, playerSign, currentDepth + 1, alpha, beta);
+
+                if (score > alpha) {
+                    alpha = score;
+                    indexOfBestMove = move;
+                }
+
+                if (alpha >= beta) {
+                    break;
+                }
+            }
+
+            if (indexOfBestMove != NOT_SET) {
+                int bestRow = indexOfBestMove / 3;
+                int bestCol = indexOfBestMove % 3;
+
+                board.makeMove(bestRow, bestCol);
+            }
+
+            return alpha;
         } else {
-            return getMin(board, playerSign, NEGATIVE_INFINITY, POSITIVE_INFINITY, currentDepth);
+
+            for (Integer move : board.getAvailableMoves()) {
+                Board modifiedBoard = board.copyBoard();
+
+                int row = move / 3;
+                int col = move % 3;
+
+                modifiedBoard.makeMove(row, col);
+
+                int score = botMove(modifiedBoard, playerSign, currentDepth + 1, alpha, beta);
+
+                if (score < beta) {
+                    beta = score;
+                    indexOfBestMove = move;
+                }
+
+                if (alpha >= beta) {
+                    break;
+                }
+            }
+
+            if (indexOfBestMove != NOT_SET) {
+                int bestRow = indexOfBestMove / 3;
+                int bestCol = indexOfBestMove % 3;
+
+                board.makeMove(bestRow, bestCol);
+            }
+
+            return beta;
         }
     }
 
-    /**
-     * @param board        - board field
-     * @param playerSign   - player's turn
-     * @param alpha        - maximizing value
-     * @param beta         - minimizing value
-     * @param currentDepth - current depth of the search tree
-     * @return the the value of alpha
-     */
-    private int getMax(Board board, PlayerSign playerSign, int alpha, int beta, int currentDepth) {
-        int indexOfBestMove = -1;
 
-        for (Integer move : board.getAvailableMoves()) {
-            Board modifiedBoard = board.copyBoard();
-            modifiedBoard.makeMove(BoardPositionMapper.getRowFromIndex(move),
-                    BoardPositionMapper.getColFromIndex(move));
-
-            int score = start(modifiedBoard, playerSign, currentDepth + 1);
-
-            // undo board move optimization?
-
-            if (score > alpha) {
-                alpha = score;
-                indexOfBestMove = move;
-            }
-
-            if (alpha >= beta) {
-                break;
-            }
-
-        }
-
-        if (indexOfBestMove != -1) {
-            board.move(indexOfBestMove);
-        }
-        return alpha;
-    }
-
-    /**
-     * @param board        - board field
-     * @param playerSign   - player's turn
-     * @param alpha        - maximizing value
-     * @param beta         - minimizing value
-     * @param currentDepth - current depth of the search tree
-     * @return beta value
-     */
-    private int getMin(Board board, PlayerSign playerSign, int alpha, int beta, int currentDepth) {
-        int indexOfBestMove = -1;
-
-        for (Integer move : board.getAvailableMoves()) {
-            Board modifiedBoard = board.copyBoard();
-            modifiedBoard.move(move);
-            int score = start(modifiedBoard, playerSign, currentDepth + 1);
-
-            if (score < beta) {
-                beta = score;
-                indexOfBestMove = move;
-            }
-
-            if (alpha >= beta) {
-                break;
-            }
-        }
-
-        if (indexOfBestMove != -1) {
-            board.move(indexOfBestMove);
-        }
-        return beta;
-    }
-
-    /**
-     * Get the score of the winner
-     *
-     * @param board        - board field
-     * @param playerSign   - player's turn
-     * @param currentDepth - current depth of the search tree
-     * @return the score of the winner
-     */
     private int score(Board board, PlayerSign playerSign, int currentDepth) {
         PlayerSign opponent = (playerSign == PlayerSign.X_PLAYER) ? PlayerSign.O_PLAYER : PlayerSign.X_PLAYER;
 

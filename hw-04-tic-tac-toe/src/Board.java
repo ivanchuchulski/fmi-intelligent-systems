@@ -1,5 +1,7 @@
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Board {
@@ -10,6 +12,7 @@ public class Board {
     private PlayerSign winner;
 
     private Set<Integer> movesAvailable;
+    private Map<Move, Boolean> tilesAvailable;
 
     private int movesCount;
     private boolean isGameOver;
@@ -47,6 +50,7 @@ public class Board {
     public boolean makeMove(int row, int col) {
         board[row][col] = playersTurn;
         ++movesCount;
+
         movesAvailable.remove(row * boardSize + col);
 
         isGameOver = isWinner();
@@ -54,6 +58,10 @@ public class Board {
         playersTurn = (PlayerSign.X_PLAYER == playersTurn) ? PlayerSign.O_PLAYER : PlayerSign.X_PLAYER;
 
         return true;
+    }
+
+    public void undoMove(int row, int col) {
+
     }
 
     public boolean isMoveLegal(int row, int col) {
@@ -122,8 +130,6 @@ public class Board {
 
         return copy;
     }
-
-
 
     private void initializeBoard() {
         board = new PlayerSign[boardSize][boardSize];

@@ -29,6 +29,17 @@ public class Main {
             currentDepth++;
         }
 
+//        board.makeMove(0, 0);
+//        board.makeMove(0, 1);
+//
+//        board.makeMove(0, 2);
+//        board.makeMove(1, 0);
+//
+//        board.makeMove(1, 1);
+//        board.makeMove(1, 2);
+//
+//        currentDepth += 3;
+
         do {
             board.printBoard();
 
@@ -44,11 +55,10 @@ public class Main {
 
             board.makeMove(row, col);
 
-
             currentDepth++;
 
             System.out.println("bot move: ");
-            bot.start(board, board.getPlayersTurn(), currentDepth);
+            bot.botMove(board, board.getPlayersTurn(), 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
         } while (!board.isGameOver());
 
