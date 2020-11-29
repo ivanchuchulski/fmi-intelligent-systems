@@ -14,46 +14,31 @@ public class Main {
         System.out.print("select your sign, X or O : ");
         PlayerSign humanSign = scanner.nextLine().equals("X") ? PlayerSign.X_PLAYER : PlayerSign.O_PLAYER;
 
-        int currentDepth = 0;
-
         if (humanPlaysFirst) {
             board.setPlayersTurn(humanSign);
         } else {
             board.setPlayersTurn(humanSign == PlayerSign.X_PLAYER ? PlayerSign.O_PLAYER : PlayerSign.X_PLAYER);
 
-            // this could be changed to be the optimal move
-            // now the bot makes random first move
-            Random random = new Random();
-            board.makeMove(random.nextInt(3), random.nextInt(3));
+            // the bot makes random first move
+//            Random random = new Random();
+//            board.makeMove(random.nextInt(3), random.nextInt(3));
 
-            currentDepth++;
+            // the optimal move?
+            bot.aiMove(board, board.getPlayersTurn(), 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            System.out.println("best move is : " + bot.getBestMove());
+            board.makeMove(bot.getBestMove());
         }
 
-        // test 1
-//        board.makeMove(0, 0);
-//        board.makeMove(0, 1);
-//
-//        board.makeMove(0, 2);
-//        board.makeMove(1, 0);
-//
-//        board.makeMove(1, 1);
-//        board.makeMove(1, 2);
-//
 
-        // test 2
-//        board.makeMove(0, 0);
-//        board.makeMove(0, 1);
-//
-//        board.makeMove(0, 2);
-//        board.makeMove(1, 0);
-//
-//        board.makeMove(2, 0);
-//        board.makeMove(1, 2);
-
-        // put on 2 1
+//        test1(board);
+//        test2(board);
+//        test3(board);
 
         do {
             board.printBoard();
+
+            bot.aiMove(board, board.getPlayersTurn(), 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            System.out.println("best move is : " + bot.getBestMove());
 
             System.out.print("your turn : ");
             String[] userTurn = scanner.nextLine().split(" ");
@@ -66,8 +51,6 @@ public class Main {
             }
 
             board.makeMove(row, col);
-
-            currentDepth++;
 
             System.out.println("bot move: ");
             bot.aiMove(board, board.getPlayersTurn(), 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
@@ -93,4 +76,38 @@ public class Main {
         }
     }
 
+    private static void test1(Board board) {
+        board.makeMove(0, 0);
+        board.makeMove(0, 1);
+
+        board.makeMove(0, 2);
+        board.makeMove(1, 0);
+
+        board.makeMove(1, 1);
+        board.makeMove(1, 2);
+    }
+
+    private static void test2(Board board) {
+        board.makeMove(0, 0);
+        board.makeMove(0, 1);
+
+        board.makeMove(0, 2);
+        board.makeMove(1, 0);
+
+        board.makeMove(2, 0);
+        board.makeMove(1, 2);
+        // put on 2 1
+    }
+
+    private static void test3(Board board) {
+        board.makeMove(0, 2);
+        board.makeMove(0, 0);
+
+        board.makeMove(1, 0);
+        board.makeMove(1, 2);
+
+        board.makeMove(1, 1);
+        board.makeMove(2, 0);
+//         put on 2 1
+    }
 }

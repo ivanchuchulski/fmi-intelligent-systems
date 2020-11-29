@@ -42,4 +42,12 @@ public class Move {
     public int hashCode() {
         return Objects.hash(row, col);
     }
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                "row=" + row +
+                ", col=" + col +
+                '}';
+    }
 }
