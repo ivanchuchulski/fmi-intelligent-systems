@@ -1,21 +1,33 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TicTacToeBot {
-    private final int NEGATIVE_INFINITY;
-    private final int POSITIVE_INFINITY;
     private final int NOT_SET = -1;
 
     private List<NodeEvaluation> rootChildrenScore = new ArrayList<>();
 
     public TicTacToeBot() {
-        NEGATIVE_INFINITY = Integer.MIN_VALUE;
-        POSITIVE_INFINITY = Integer.MAX_VALUE;
+    }
+
+    public Move getBestMove() {
+        int maxEval = Integer.MIN_VALUE;
+        Move result = null;
+        int bestIndex = -1;
+
+        for (NodeEvaluation nodeEvaluation : rootChildrenScore) {
+            if (nodeEvaluation.getEvaluation() > maxEval) {
+                maxEval = nodeEvaluation.getEvaluation();
+                result = nodeEvaluation.getMove();
+            }
+        }
+
+        return result;
     }
 
     public int botMove(Board board, PlayerSign playerSign, int currentDepth, int alpha, int beta) {
         if (board.isGameOver()) {
-            return score(board, playerSign, currentDepth);
+            return evaluatePosition(board, playerSign, currentDepth);
         }
 
         int indexOfBestMove = NOT_SET;
@@ -82,8 +94,64 @@ public class TicTacToeBot {
         }
     }
 
+    public int aiMove(Board board, PlayerSign playerSign, int currentDepth, int alpha, int beta) {
+        if (board.isWinner()) {
+            return evaluatePosition(board, playerSign, currentDepth);
+        }
 
-    private int score(Board board, PlayerSign playerSign, int currentDepth) {
+        if (currentDepth == 0) {
+            rootChildrenScore.clear();
+        }
+
+        if (playerSign == board.getPlayersTurn()) {
+            int score = Integer.MIN_VALUE;
+
+            for (Move move : board.getTilesAvailable().keySet()) {
+                if (!board.getTilesAvailable().get(move)) {
+                    continue;
+                }
+
+                board.makeMove(move);
+
+                score = Math.max(score, aiMove(board, playerSign, currentDepth + 1, alpha, beta));
+                alpha = Math.max(alpha, score);
+
+                board.undoMove(move);
+
+                if (currentDepth == 0) {
+                    rootChildrenScore.add(new NodeEvaluation(move, score));
+                }
+
+                if (alpha >= beta) {
+                    break;
+                }
+            }
+            return score;
+
+        } else {
+            int score = Integer.MAX_VALUE;
+            for (Move move : board.getTilesAvailable().keySet()) {
+                if (!board.getTilesAvailable().get(move)) {
+                    continue;
+                }
+
+                board.makeMove(move);
+
+                score = Math.min(score, aiMove(board, playerSign, currentDepth + 1, alpha, beta));
+                beta = Math.min(beta, score);
+
+                board.undoMove(move);
+
+                if (alpha >= beta) {
+                    break;
+                }
+            }
+
+            return score;
+        }
+    }
+
+    private int evaluatePosition(Board board, PlayerSign playerSign, int currentDepth) {
         PlayerSign opponent = (playerSign == PlayerSign.X_PLAYER) ? PlayerSign.O_PLAYER : PlayerSign.X_PLAYER;
 
         if (board.getWinner() == playerSign) {

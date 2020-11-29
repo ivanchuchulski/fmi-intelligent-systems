@@ -29,6 +29,7 @@ public class Main {
             currentDepth++;
         }
 
+        // test 1
 //        board.makeMove(0, 0);
 //        board.makeMove(0, 1);
 //
@@ -38,7 +39,18 @@ public class Main {
 //        board.makeMove(1, 1);
 //        board.makeMove(1, 2);
 //
-//        currentDepth += 3;
+
+        // test 2
+//        board.makeMove(0, 0);
+//        board.makeMove(0, 1);
+//
+//        board.makeMove(0, 2);
+//        board.makeMove(1, 0);
+//
+//        board.makeMove(2, 0);
+//        board.makeMove(1, 2);
+
+        // put on 2 1
 
         do {
             board.printBoard();
@@ -58,7 +70,8 @@ public class Main {
             currentDepth++;
 
             System.out.println("bot move: ");
-            bot.botMove(board, board.getPlayersTurn(), 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            bot.aiMove(board, board.getPlayersTurn(), 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            board.makeMove(bot.getBestMove());
 
         } while (!board.isGameOver());
 

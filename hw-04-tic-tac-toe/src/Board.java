@@ -1,11 +1,10 @@
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class Board {
-    private static final int boardSize = 3;
+    private static final int sizeOfBoard = 3;
     private PlayerSign[][] board;
 
     private PlayerSign playersTurn;
@@ -25,33 +24,17 @@ public class Board {
         isGameOver = false;
 
         movesAvailable = new HashSet<>();
+        tilesAvailable = new HashMap<>();
 
         initializeBoard();
     }
 
-    /**
-     * Map move
-     *
-     * @param index - position on the board [0-8]
-     * @return the mapped row and column on the board
-     */
-    public boolean move(int index) {
-        return makeMove(index / boardSize, index % boardSize);
-    }
-
-    /**
-     * Make player's move
-     *
-     * @param row - the index of the row to make a move
-     * @param col - the index of the column to make a move
-     * @return true if a move is made
-     * else return false
-     */
     public boolean makeMove(int row, int col) {
         board[row][col] = playersTurn;
         ++movesCount;
 
-        movesAvailable.remove(row * boardSize + col);
+        movesAvailable.remove(row * sizeOfBoard + col);
+        tilesAvailable.put(new Move(row, col), false);
 
         isGameOver = isWinner();
 
@@ -60,8 +43,23 @@ public class Board {
         return true;
     }
 
-    public void undoMove(int row, int col) {
 
+    public void makeMove(Move move) {
+        board[move.getRow()][move.getCol()] = playersTurn;
+        ++movesCount;
+        tilesAvailable.put(move, false);
+
+        isGameOver = isWinner();
+
+        playersTurn = (PlayerSign.X_PLAYER == playersTurn) ? PlayerSign.O_PLAYER : PlayerSign.X_PLAYER;
+    }
+
+    public void undoMove(Move move) {
+        board[move.getRow()][move.getCol()] = PlayerSign.NONE;
+        --movesCount;
+        tilesAvailable.put(move, true);
+
+        playersTurn = (PlayerSign.X_PLAYER == playersTurn) ? PlayerSign.O_PLAYER : PlayerSign.X_PLAYER;
     }
 
     public boolean isMoveLegal(int row, int col) {
@@ -80,8 +78,8 @@ public class Board {
     }
 
     public void printBoard() {
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
+        for (int i = 0; i < sizeOfBoard; i++) {
+            for (int j = 0; j < sizeOfBoard; j++) {
                 System.out.print(PlayerSign.getSymbolFromPlayerSign(board[i][j]) + " ");
             }
 
@@ -104,6 +102,10 @@ public class Board {
         return movesAvailable;
     }
 
+    public Map<Move, Boolean> getTilesAvailable() {
+        return tilesAvailable;
+    }
+
     public PlayerSign getWinner() {
         return winner;
     }
@@ -115,8 +117,8 @@ public class Board {
     public Board copyBoard() {
         Board copy = new Board();
 
-        for (int i = 0; i < boardSize; i++) {
-            System.arraycopy(this.board[i], 0, copy.board[i], 0, boardSize);
+        for (int i = 0; i < sizeOfBoard; i++) {
+            System.arraycopy(this.board[i], 0, copy.board[i], 0, sizeOfBoard);
         }
 
         copy.playersTurn = this.playersTurn;
@@ -132,70 +134,78 @@ public class Board {
     }
 
     private void initializeBoard() {
-        board = new PlayerSign[boardSize][boardSize];
-        for (PlayerSign[] playerSigns : board) {
-            Arrays.fill(playerSigns, PlayerSign.NONE);
+        board = new PlayerSign[sizeOfBoard][sizeOfBoard];
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                board[i][j] = PlayerSign.NONE;
+                tilesAvailable.put(new Move(i, j), true);
+            }
         }
 
         movesAvailable.clear();
 
-        for (int square = 0; square < boardSize * boardSize; square++) {
+        for (int square = 0; square < sizeOfBoard * sizeOfBoard; square++) {
             movesAvailable.add(square);
         }
     }
 
-    /**
-     * Find whether there is a winner
-     *
-     * @return true if there is a winner
-     * else return false
-     */
-    private boolean isWinner() {
-        for (int i = 0; i < boardSize; ++i) {
-            /**
-             * Column winner
-             */
+    public boolean isWinner() {
+        for (int i = 0; i < sizeOfBoard; i++) {
+            // column winner
             if (board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != PlayerSign.NONE) {
                 winner = board[0][i];
                 return true;
             }
 
-            /**
-             * Row winner
-             */
+            // row winner
             if (board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] != PlayerSign.NONE) {
                 winner = board[i][0];
                 return true;
             }
         }
 
-        /**
-         * Main diagonal winner
-         */
+         // main diagonal winner
         if (board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] != PlayerSign.NONE) {
             winner = board[0][0];
             return true;
         }
 
-        /**
-         * Second diagonal winner
-         */
+         // second diagonal winner
         if (board[0][2] == board[1][1] && board[0][2] == board[2][0] && board[0][2] != PlayerSign.NONE) {
             winner = board[0][2];
             return true;
         }
 
-        /**
-         * Draw
-         */
-        if (movesCount == boardSize * boardSize && winner == PlayerSign.NONE) {
-            return true;
+        for (Move move : tilesAvailable.keySet()) {
+            Boolean moveAvailable = tilesAvailable.get(move);
+            if (moveAvailable) {
+                return false;
+            }
         }
 
-        /**
-         * None
-         */
-        return false;
+        winner = PlayerSign.NONE;
+        return true;
+
+//        // draw
+//        for (int i = 0; i < board.length; i++) {
+//            for (int j = 0; j < board.length; j++) {
+//                if (board[i][j] == PlayerSign.NONE) {
+//                    // no winner yet
+//                    return false;
+//                }
+//            }
+//        }
+//
+//        // the result is draw
+//        return true;
+
+//        if (movesCount == sizeOfBoard * sizeOfBoard && winner == PlayerSign.NONE) {
+//            return true;
+//        }
+//
+//        // no winner yet
+//        return false;
     }
 
 
