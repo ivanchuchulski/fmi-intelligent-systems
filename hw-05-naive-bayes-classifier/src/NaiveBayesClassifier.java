@@ -14,28 +14,32 @@ import java.util.Set;
 public class NaiveBayesClassifier {
     private int attributesCount;
     private final List<DatasetEntry> datasetEntries;
-    private final List<DatasetEntry> testSet;
-    private final List<DatasetEntry> validatingSet;
+
     private final Map<String, Integer> classNamesCount;
+
+    private final List<DatasetEntry> validatingSet;
+    private final List<DatasetEntry> testSet;
+
     private final Model model;
 
-    // {classname -> {attribute -> #votes} }
-//    private final Map<String, Map<String, Integer>> model;
+    private final List<Double> roundAccuracies;
+    private double finalAccuracy;
+    private final int validationTimes = 10;
 
     public NaiveBayesClassifier() {
         datasetEntries = new ArrayList<>();
-        testSet = new ArrayList<>();
-        validatingSet = new ArrayList<>();
         classNamesCount = new HashMap<>();
+
+        validatingSet = new ArrayList<>();
+        testSet = new ArrayList<>();
+
         model = new Model();
+
+        roundAccuracies = new ArrayList<>();
     }
 
-    // performing ten fold cross-validation
     public void classify() {
-        int validationTimes = 10;
-
         readData();
-        double accuracySum = 0.0;
 
         for (int time = 0; time < validationTimes; time++) {
 //            buildTestAndValidatingSetsFixed(time);
@@ -43,16 +47,27 @@ public class NaiveBayesClassifier {
 
             buildModel();
 
-            double accuracy = makePrediction();
-
-            accuracySum += accuracy;
-
-            System.out.printf("accuracy on round %s: %.2f%s%n", time, 100 * accuracy, "%");
+            roundAccuracies.add(calculateAccuracyPercentForTestSet());
 
             resetModel();
         }
 
-        System.out.printf("Total: %.2f%s%n", 100 * (accuracySum / 10.0), "%");
+        double accuracySum = 0.0;
+        for (Double roundAccuracy : roundAccuracies) {
+            accuracySum += roundAccuracy;
+        }
+
+        finalAccuracy = accuracySum / validationTimes;
+    }
+
+    public void printResults() {
+        System.out.println("after performing ten fold cross-validation : ");
+
+        for (int time = 0; time < validationTimes; time++) {
+            System.out.printf("accuracy on round %s: %.3f%%%n", time + 1, roundAccuracies.get(time));
+        }
+
+        System.out.printf("final accuracy: %.3f%%%n", finalAccuracy);
     }
 
     private void readData() {
@@ -127,7 +142,7 @@ public class NaiveBayesClassifier {
         model.buildModel(classNamesCount.keySet(), validatingSet, attributesCount);
     }
 
-    private double makePrediction() {
+    private double calculateAccuracyPercentForTestSet() {
         double correctPredictionsCount = 0.0;
 
         for (DatasetEntry datasetEntry : testSet) {
@@ -138,7 +153,7 @@ public class NaiveBayesClassifier {
             }
         }
 
-        return correctPredictionsCount / testSet.size();
+        return 100 * correctPredictionsCount / testSet.size();
     }
 
     private void resetModel() {

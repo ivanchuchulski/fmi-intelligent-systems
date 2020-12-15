@@ -5,6 +5,6 @@ public class Main {
         NaiveBayesClassifier naiveBayesClassifier = new NaiveBayesClassifier();
 
         naiveBayesClassifier.classify();
+        naiveBayesClassifier.printResults();
     }
-
 }

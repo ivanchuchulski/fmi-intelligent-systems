@@ -6,6 +6,7 @@ import java.util.Set;
 
 public class Model {
     private int attributesCount;
+    // {classname -> {list of attributes -> #votes} }
     private final Map<String, List<AttributeVote>> model;
 
     public Model() {
@@ -18,10 +19,9 @@ public class Model {
         for (String className : classNames) {
             List<AttributeVote> attributeAttributeVotes = new ArrayList<>();
 
-            // maybe here add the Laplace smoothing, each vote to be 1 initially
+            // add the Laplace smoothing, each vote to be 1 initially
             // this way zero probability will be avoided
             for (int i = 0; i < attributesCount; i++) {
-//                attributeAttributeVotes.add(new AttributeVote(0, 0, 0));
                 attributeAttributeVotes.add(new AttributeVote(1, 1, 1));
             }
 
@@ -35,7 +35,10 @@ public class Model {
             List<AttributeVote> attributeVotes = model.get(className);
 
             for (int i = 0; i < attributes.length; i++) {
-                attributeVotes.get(i).incrementVote(attributes[i]);
+                String attribute = attributes[i];
+                AttributeVote attributeVote = attributeVotes.get(i);
+
+                attributeVote.incrementVote(attribute);
             }
         }
     }
