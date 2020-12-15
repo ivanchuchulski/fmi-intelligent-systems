@@ -24,7 +24,7 @@ public class NaiveBayesClassifier {
 
     private final List<Double> roundAccuracies;
     private double finalAccuracy;
-    private final int validationTimes = 10;
+    private final int validationRounds = 10;
 
     public NaiveBayesClassifier() {
         datasetEntries = new ArrayList<>();
@@ -41,9 +41,9 @@ public class NaiveBayesClassifier {
     public void classify() {
         readData();
 
-        for (int time = 0; time < validationTimes; time++) {
-//            buildTestAndValidatingSetsFixed(time);
-            buildTestAndValidatingSetsOnRandom();
+        for (int round = 0; round < validationRounds; round++) {
+            buildTestAndValidatingSetsFixed(round);
+//            buildTestAndValidatingSetsOnRandom();
 
             buildModel();
 
@@ -57,13 +57,13 @@ public class NaiveBayesClassifier {
             accuracySum += roundAccuracy;
         }
 
-        finalAccuracy = accuracySum / validationTimes;
+        finalAccuracy = accuracySum / validationRounds;
     }
 
     public void printResults() {
         System.out.println("after performing ten fold cross-validation : ");
 
-        for (int time = 0; time < validationTimes; time++) {
+        for (int time = 0; time < validationRounds; time++) {
             System.out.printf("accuracy on round %s: %.3f%%%n", time + 1, roundAccuracies.get(time));
         }
 
@@ -93,18 +93,19 @@ public class NaiveBayesClassifier {
         }
     }
 
-    private void buildTestAndValidatingSetsFixed(int validationTimes) {
+    private void buildTestAndValidatingSetsFixed(int round) {
         int oneTenthPart = datasetEntries.size() / 10;
 
         Set<DatasetEntry> addedToTest = new HashSet<>();
 
         int counter = 0;
-        int index = validationTimes * oneTenthPart;
+        int index = round * oneTenthPart;
         while (counter < oneTenthPart) {
             DatasetEntry datasetEntry = datasetEntries.get(index);
 
             testSet.add(datasetEntry);
             addedToTest.add(datasetEntry);
+
             index++;
             counter++;
         }

@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class Model {
-    private int attributesCount;
     // {classname -> {list of attributes -> #votes} }
     private final Map<String, List<AttributeVote>> model;
 
@@ -14,7 +13,6 @@ public class Model {
     }
 
     public void buildModel(Set<String> classNames, List<DatasetEntry> validatingSet, int attributesCount) {
-        this.attributesCount = attributesCount;
 
         for (String className : classNames) {
             List<AttributeVote> attributeAttributeVotes = new ArrayList<>();
