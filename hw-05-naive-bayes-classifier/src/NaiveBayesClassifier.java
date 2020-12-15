@@ -29,24 +29,25 @@ public class NaiveBayesClassifier {
         model = new Model();
     }
 
+    // performing ten fold cross-validation
     public void classify() {
         int validationTimes = 10;
 
         readData();
         double accuracySum = 0.0;
 
-        for (int time = 1; time <= validationTimes; time++) {
+        for (int time = 0; time < validationTimes; time++) {
             buildTestAndValidatingSets(time);
+
             buildModel();
 
             double accuracy = makePrediction();
 
-            System.out.printf("Accuracy: %.2f%s%n", 100 * accuracy, "%");
             accuracySum += accuracy;
 
-            testSet.clear();
-            validatingSet.clear();
-            model.clearModel();
+            System.out.printf("accuracy on round %s: %.2f%s%n", time, 100 * accuracy, "%");
+
+            resetModel();
         }
 
         System.out.printf("Total: %.2f%s%n", 100 * (accuracySum / 10.0), "%");
@@ -75,19 +76,20 @@ public class NaiveBayesClassifier {
         }
     }
 
-    // performing ten fold cross-validation
     private void buildTestAndValidatingSets(int validationTimes) {
         int oneTenthPart = datasetEntries.size() / 10;
 
         Set<DatasetEntry> addedToTest = new HashSet<>();
 
-        // TODO - fix
-        for (int i = 0; i < oneTenthPart; i++) {
-            int index = validationTimes * i;
+        int counter = 0;
+        int index = validationTimes * oneTenthPart;
+        while (counter < oneTenthPart) {
             DatasetEntry datasetEntry = datasetEntries.get(index);
 
             testSet.add(datasetEntry);
             addedToTest.add(datasetEntry);
+            index++;
+            counter++;
         }
 
         for (DatasetEntry datasetEntry : datasetEntries) {
@@ -113,6 +115,12 @@ public class NaiveBayesClassifier {
         }
 
         return correctPredictionsCount / testSet.size();
+    }
+
+    private void resetModel() {
+        testSet.clear();
+        validatingSet.clear();
+        model.clearModel();
     }
 
     private String findClassNameForEntry(DatasetEntry datasetEntry) {
