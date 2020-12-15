@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +38,8 @@ public class NaiveBayesClassifier {
         double accuracySum = 0.0;
 
         for (int time = 0; time < validationTimes; time++) {
-            buildTestAndValidatingSets(time);
+//            buildTestAndValidatingSetsFixed(time);
+            buildTestAndValidatingSetsOnRandom();
 
             buildModel();
 
@@ -76,7 +78,7 @@ public class NaiveBayesClassifier {
         }
     }
 
-    private void buildTestAndValidatingSets(int validationTimes) {
+    private void buildTestAndValidatingSetsFixed(int validationTimes) {
         int oneTenthPart = datasetEntries.size() / 10;
 
         Set<DatasetEntry> addedToTest = new HashSet<>();
@@ -89,6 +91,28 @@ public class NaiveBayesClassifier {
             testSet.add(datasetEntry);
             addedToTest.add(datasetEntry);
             index++;
+            counter++;
+        }
+
+        for (DatasetEntry datasetEntry : datasetEntries) {
+            if (!addedToTest.contains(datasetEntry)) {
+                validatingSet.add(datasetEntry);
+            }
+        }
+    }
+
+    private void buildTestAndValidatingSetsOnRandom() {
+        Collections.shuffle(datasetEntries);
+        int oneTenthPart = datasetEntries.size() / 10;
+
+        Set<DatasetEntry> addedToTest = new HashSet<>();
+
+        int counter = 0;
+        while (counter < oneTenthPart) {
+            DatasetEntry datasetEntry = datasetEntries.get(counter);
+
+            testSet.add(datasetEntry);
+            addedToTest.add(datasetEntry);
             counter++;
         }
 
