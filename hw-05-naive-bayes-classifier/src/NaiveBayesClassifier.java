@@ -172,7 +172,7 @@ public class NaiveBayesClassifier {
 
             double classNameProbability = calculateProbabilityForClass(datasetEntry, className, attributeVotes);
 
-            if (classNameProbability > bestProbability) {
+            if (Double.compare(classNameProbability, bestProbability) > 0) {
                 bestProbability = classNameProbability;
                 bestClassName = className;
             }
@@ -183,9 +183,8 @@ public class NaiveBayesClassifier {
 
     private double calculateProbabilityForClass(DatasetEntry datasetEntry, String currrentClassname,
                                                 List<AttributeVote> votesForAttributes) {
-        String[] attributes = datasetEntry.getAttributes();
-
         double probability = 1.0;
+        double probabilitySumInLog = 0.0;
 
         double countForClass = 1.0;
         double countForOtherClass = 1.0;
@@ -198,19 +197,24 @@ public class NaiveBayesClassifier {
             }
         }
 
-        probability *= countForClass / (countForClass + countForOtherClass);
+        double classProbability = countForClass / (countForClass + countForOtherClass);
+
+        probability *= classProbability;
+//        probabilitySumInLog += Math.log(classProbability);
 
         for (int i = 0; i < attributesCount; i++) {
-            String attribute = attributes[i];
+            String attribute = datasetEntry.getAttributes()[i];
             AttributeVote attributeVote = votesForAttributes.get(i);
 
             int voteCount = attributeVote.getVoteCount(attribute);
             int allVotesNumber = attributeVote.getAllVotesNumber();
 
-            probability *= (1.0 * voteCount) / allVotesNumber;
+            double voteConditionalProbability = (1.0 * voteCount) / allVotesNumber;
+
+            probability *= voteConditionalProbability;
+//            probabilitySumInLog += Math.log(classProbability);
         }
 
         return probability;
     }
-
 }
