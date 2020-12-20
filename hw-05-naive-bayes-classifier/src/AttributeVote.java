@@ -14,6 +14,7 @@ public class AttributeVote {
             case "y" -> yesVotes++;
             case "n" -> noVotes++;
             case "?" -> questionVotes++;
+            default -> throw new IllegalStateException("Unexpected value: " + vote);
         }
     }
 

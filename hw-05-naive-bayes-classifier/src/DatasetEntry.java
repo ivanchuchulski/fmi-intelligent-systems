@@ -2,8 +2,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class DatasetEntry {
-    private String className;
-    private String[] attributes;
+    private final String className;
+    private final String[] attributes;
 
     public DatasetEntry(String className, String[] attributes) {
         this.className = className;
@@ -14,16 +14,8 @@ public class DatasetEntry {
         return className;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
     public String[] getAttributes() {
         return attributes;
-    }
-
-    public void setAttributes(String[] attributes) {
-        this.attributes = attributes;
     }
 
     @Override

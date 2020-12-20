@@ -24,7 +24,7 @@ public class NaiveBayesClassifier {
 
     private final List<Double> roundAccuracies;
     private double finalAccuracy;
-    private final int validationRounds = 10;
+    private final int numberOfValidationRounds = 10;
 
     public NaiveBayesClassifier() {
         datasetEntries = new ArrayList<>();
@@ -41,7 +41,7 @@ public class NaiveBayesClassifier {
     public void classify() {
         readData();
 
-        for (int round = 0; round < validationRounds; round++) {
+        for (int round = 0; round < numberOfValidationRounds; round++) {
             buildTestAndValidatingSetsFixed(round);
 //            buildTestAndValidatingSetsOnRandom();
 
@@ -57,13 +57,13 @@ public class NaiveBayesClassifier {
             accuracySum += roundAccuracy;
         }
 
-        finalAccuracy = accuracySum / validationRounds;
+        finalAccuracy = accuracySum / numberOfValidationRounds;
     }
 
     public void printResults() {
         System.out.println("after performing ten fold cross-validation : ");
 
-        for (int time = 0; time < validationRounds; time++) {
+        for (int time = 0; time < numberOfValidationRounds; time++) {
             System.out.printf("accuracy on round %s: %.3f%%%n", time + 1, roundAccuracies.get(time));
         }
 

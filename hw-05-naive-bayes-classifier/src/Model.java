@@ -17,8 +17,6 @@ public class Model {
         for (String className : classNames) {
             List<AttributeVote> attributeAttributeVotes = new ArrayList<>();
 
-            // ?added the Laplace smoothing, each vote to be 1 initially
-            // this way zero probability will be avoided
             for (int i = 0; i < attributesCount; i++) {
                 attributeAttributeVotes.add(new AttributeVote(1, 1, 1));
             }
