@@ -39,7 +39,7 @@ public class Main {
             for (int j = i + 1; j < size; ++j) {
 //                matrix[i][j] = getRandomInt(2 * size);
 
-                matrix[i][j] = getRandomIntInRange(0, 2 * size) + 1 ;
+                matrix[i][j] = getRandomIntInRange(0, 2 * size) + 1;
 
                 matrix[j][i] = matrix[i][j];
             }
@@ -71,8 +71,8 @@ public class Main {
         final double BEST_PATHS_PERCENT = 0.2;
 
         return population.stream()
-                .sorted(pathLengthComparator)
-                .limit((int) (numberOfCities * BEST_PATHS_PERCENT))
-                .collect(Collectors.toList());
+                         .sorted(pathLengthComparator)
+                         .limit((int) (numberOfCities * BEST_PATHS_PERCENT))
+                         .collect(Collectors.toList());
     }
 }

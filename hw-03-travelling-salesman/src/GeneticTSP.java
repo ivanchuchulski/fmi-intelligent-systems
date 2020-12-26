@@ -70,12 +70,11 @@ public class GeneticTSP {
             } while (counter++ < 0.2 * populationSize);
 
             population = population.stream()
-                    .sorted(pathLengthComparator)
-                    .limit(numberOfCities)
-                    .collect(Collectors.toSet());
+                                   .sorted(pathLengthComparator)
+                                   .limit(numberOfCities)
+                                   .collect(Collectors.toSet());
 
         } while (currentSteps++ < maxSteps);
-
 
 
         bestPathsAtEnd = getBestFromPopulation(numberOfCities, population);
@@ -104,9 +103,9 @@ public class GeneticTSP {
 
     private List<Path> getBestFromPopulation(int numberOfCities, Set<Path> population) {
         return population.stream()
-                .sorted(pathLengthComparator)
-                .limit((int) (numberOfCities * BEST_PATHS_PERCENT))
-                .collect(Collectors.toList());
+                         .sorted(pathLengthComparator)
+                         .limit((int) (numberOfCities * BEST_PATHS_PERCENT))
+                         .collect(Collectors.toList());
     }
 
     private void mutateChildren(List<Path> children) {

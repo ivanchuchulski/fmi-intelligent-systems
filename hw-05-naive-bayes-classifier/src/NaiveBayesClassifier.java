@@ -42,8 +42,8 @@ public class NaiveBayesClassifier {
         readData();
 
         for (int round = 0; round < numberOfValidationRounds; round++) {
-            buildTestAndValidatingSetsFixed(round);
-//            buildTestAndValidatingSetsOnRandom();
+//            buildTestAndValidatingSetsFixed(round);
+            buildTestAndValidatingSetsOnRandom();
 
             buildModel();
 
